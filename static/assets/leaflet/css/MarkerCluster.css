@@ -1,0 +1,50 @@
+.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {
+	-webkit-transition: -webkit-transform 0.3s ease-out, opacity 0.3s ease-in;
+	-moz-transition: -moz-transform 0.3s ease-out, opacity 0.3s ease-in;
+	-o-transition: -o-transform 0.3s ease-out, opacity 0.3s ease-in;
+	transition: transform 0.3s ease-out, opacity 0.3s ease-in;
+}
+
+.leaflet-cluster-spider-leg {
+	/* stroke-dashoffset (duration and function) should match with leaflet-marker-icon transform in order to track it exactly */
+	-webkit-transition: -webkit-stroke-dashoffset 0.3s ease-out, -webkit-stroke-opacity 0.3s ease-in;
+	-moz-transition: -moz-stroke-dashoffset 0.3s ease-out, -moz-stroke-opacity 0.3s ease-in;
+	-o-transition: -o-stroke-dashoffset 0.3s ease-out, -o-stroke-opacity 0.3s ease-in;
+	transition: stroke-dashoffset 0.3s ease-out, stroke-opacity 0.3s ease-in;
+}
+.leaflet-marker-icon {
+	width: auto !important;
+	height: auto !important;
+	transform: translate(-35px, -90px);
+}
+.leaflet-popup-content .cplgr-listing-grid {
+	margin-bottom: 0 !important;
+}
+.leaflet-popup-content {
+	margin: 0;
+}
+.leaflet-popup {
+	bottom: 85px !important;
+    left: 50% !important;
+    margin-left: -150px !important;
+}
+.leaflet-popup-content-wrapper {
+	border-radius: 25px !important;
+}
+
+
+.leaflet-marker-icon.marker-cluster {
+	position: relative;
+	width: 70px !important;
+    height: 90px !important;
+    background-color: transparent !important;
+	background-image: url('../../../images/marker/number_inline.png') !important;
+
+}
+.leaflet-marker-icon.marker-cluster > div {
+	background-color: transparent !important;
+	position: absolute;
+	left: 15px;
+    bottom: 40px;
+    color: #ffffff;
+}
