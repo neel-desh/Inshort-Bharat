@@ -16,17 +16,67 @@ app.secret_key = 'this is a very secure string'
 def index():
     return render_template("base.html")
 
-##
+##==========
 ##* Web Stories
-##
+##==========
 @app.route('/web-stories')
 def webstories():
     return render_template("news/stories.html")
 
-##?========================
+
+##?================================================
+##TODO: Authentication Pages
+##? Login, Register, VerifyOTP, ForgotPassword, ResetPassword, Logout
+
+##==========
+##TODO: Login
+##==========
+@app.route('/login')
+def login():
+    return render_template("authentication/login.html")
+
+##==========
+##TODO: Register
+##==========
+@app.route('/register')
+def register():
+    return render_template("authentication/register.html")
+
+##==========
+##TODO: VerifyOTP
+##==========
+@app.route('/verify-otp')
+def verifyotp():
+    return render_template("authentication/verify.html")
+
+##==========
+##TODO: Forgot Password
+##==========
+@app.route('/forgot-password')
+def forgotpassword():
+    return render_template("authentication/forgotpassword.html")
+
+##==========
+##TODO: ChangePassword
+##==========
+@app.route('/change-password')
+def changepassword():
+    return redirect(url_for('login'))
+
+##==========
+##TODO: Logout
+##==========
+@app.route('/logout')
+def logout():
+    return redirect(url_for('index'))
+
+##?
+##?TODO: Authentication Pages END
+##?================================================
+
+##?================================================
 ##? Misc Pages
 ##? Newsletter, About, Contact, Privacy policy, Terms&condition, FAQ
-
 ##
 ##* NewsLetter
 ##
@@ -68,16 +118,25 @@ def privacypolicy():
 @app.route("/terms-and-condition")
 def termsncondition():
     return render_template("terms-and-condition.html")
-
+##?
+##? Misc Pages END
+##?================================================
 
 
 ##!
-##! Server Error Handles
+##! Server Error Handler
 ##!
 
+##*
+##* 404 Handler
+##*
 @app.errorhandler(404) 
 def not_found(e): 
   return render_template("404.html")
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=False)
