@@ -75,6 +75,36 @@ def logout():
 ##?================================================
 
 ##?================================================
+##?TODO: User Profile & Dashboard Pages
+##? Account, Edit Account, View Bookmarked News, View Liked News, Account Preferences
+
+##==========
+##TODO: Account
+##==========
+@app.route('/account')
+def account():
+    return render_template("profile/account.html")
+##==========
+##TODO: Edit Account
+##==========
+@app.route('/edit-account')
+def editaccount():
+    return render_template("profile/dashboard-edit-profile.html")
+
+##==========
+##TODO: View
+##==========
+@app.route('/view-bookmarked')
+def viewbookmarked():
+    return render_template("profile/dashboard-bookmark.html")
+
+##?
+##?TODO: User Profile & Dashboard Pages END
+##?================================================
+
+
+
+##?================================================
 ##? Misc Pages
 ##? Newsletter, About, Contact, Privacy policy, Terms&condition, FAQ
 ##
