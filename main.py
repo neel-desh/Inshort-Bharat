@@ -14,7 +14,7 @@ app.secret_key = 'this is a very secure string'
 ##==========
 @app.route('/')
 def index():
-    return render_template("base.html")
+    return render_template("index.html")
 
 ##==========
 ##* Web Stories
