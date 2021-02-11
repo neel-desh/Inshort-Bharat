@@ -2,7 +2,7 @@ from flask import *
 import hashlib, os
 from werkzeug.utils import secure_filename
 import requests
-app = Flask(__name__)
+app = Flask(__name__,template_folder='templates')
 app.secret_key = 'this is a very secure string'
 # UPLOAD_FOLDER = 'static/uploads'
 # ALLOWED_EXTENSIONS = set(['jpeg', 'jpg', 'png', 'gif'])
@@ -139,4 +139,4 @@ def not_found(e):
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
