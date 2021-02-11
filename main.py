@@ -103,6 +103,41 @@ def viewbookmarked():
 ##?================================================
 
 
+##?================================================
+##?TODO: Admin Profile & Dashboard Pages END
+##? Account, Edit Account, Create News, Edit News, Account Preferences
+
+##==========
+##TODO: Admin Account
+##==========
+@app.route('/admin-account')
+def adminaccount():
+    return render_template("profile/admin/admin-account.html")
+
+##==========
+##TODO: Admin Edit Account
+##==========
+@app.route('/admin-edit-account')
+def admineditaccount():
+    return render_template("profile/admin/admin-dashboard-edit-profile.html")
+
+##==========
+##TODO: Create Admin - News
+##==========
+@app.route('/create-news')
+def admincreatenews():
+    return render_template("profile/admin/admin-dashboard-post-news.html")
+
+##==========
+##TODO: Edit Admin - News
+##==========
+@app.route('/edit-news')
+def admineditnews():
+    return render_template("profile/admin/admin-dashboard-manage-news.html")
+
+##?
+##?TODO: Admin Profile & Dashboard Pages END
+##?================================================
 
 ##?================================================
 ##? Misc Pages
