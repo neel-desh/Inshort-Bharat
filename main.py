@@ -23,6 +23,36 @@ def index():
 def webstories():
     return render_template("news/stories.html")
 
+##?================================================
+##TODO: News Display Pages
+##? 
+
+##==========
+##TODO: news
+##==========
+@app.route('/news')
+def news():
+    return render_template("news/blog.html")
+
+##==========
+##TODO: news-grids
+##==========
+@app.route('/news-grids')
+def newsgrids():
+    return render_template("news/blog-grid.html")
+
+##==========
+##TODO: news detail page
+##==========
+@app.route('/dp')
+def dp():
+    return render_template("news/blog-details.html")
+
+
+##?
+##TODO: News Display Pages End
+##?================================================
+
 
 ##?================================================
 ##TODO: Authentication Pages
@@ -138,6 +168,8 @@ def admineditnews():
 ##?
 ##?TODO: Admin Profile & Dashboard Pages END
 ##?================================================
+
+
 
 ##?================================================
 ##? Misc Pages
