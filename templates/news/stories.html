@@ -2,7 +2,7 @@
 <html ⚡>
   <head>
     <meta charset="utf-8">
-    <title>Joy of Pets</title>
+    <title>Inshort Bharat - Web Stories</title>
     <link rel="canonical" href="pets.html">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
     <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
@@ -62,11 +62,11 @@
     <amp-story standalone
         title="Joy of Pets"
         publisher="AMP tutorials"
-        publisher-logo-src="assets/AMP-Brand-White-Icon.svg"
-        poster-portrait-src="assets/cover.jpg">
+        publisher-logo-src="/static/assets/AMP-Brand-White-Icon.svg"
+        poster-portrait-src="/static/assets/cover.jpg">
       <amp-story-page id="cover">
         <amp-story-grid-layer template="fill">
-          <amp-img src="assets/cover.jpg"
+          <amp-img src="/static/assets/cover.jpg"
               width="720" height="1280"
               layout="responsive">
           </amp-img>
@@ -81,7 +81,7 @@
       <amp-story-page id="page1">
         <amp-story-grid-layer template="vertical">
           <h1>Cats</h1>
-          <amp-img src="assets/cat.jpg"
+          <amp-img src="/static/assets/cat.jpg"
               width="720" height="1280"
               layout="responsive">
           </amp-img>
@@ -92,7 +92,7 @@
       <!-- Page 2 (Dog): 2 layers (fill + thirds) -->
       <amp-story-page id="page2">
         <amp-story-grid-layer template="fill">
-          <amp-img src="assets/dog.jpg" 
+          <amp-img src="/static/assets/dog.jpg" 
               width="720" height="1280"
               layout="responsive">
           </amp-img>
@@ -104,9 +104,9 @@
       </amp-story-page>
 
       <!-- Page 3 (Bird): 3 layers (fill + vertical + vertical) + Audio-->
-      <amp-story-page id="page3" background-audio="assets/bird-singing.mp3">
+      <amp-story-page id="page3" background-audio="/static/assets/bird-singing.mp3">
         <amp-story-grid-layer template="fill">
-          <amp-img src="assets/bird.jpg"
+          <amp-img src="/static/assets/bird.jpg"
               width="720" height="1280"
               layout="responsive">
           </amp-img>
@@ -124,9 +124,9 @@
         <amp-story-grid-layer template="fill">
           <amp-video autoplay loop
                 width="720" height="1280"
-                poster="assets/rabbit.jpg"
+                poster="/static/assets/rabbit.jpg"
                 layout="responsive">
-              <source src="assets/rabbit.mp4" type="video/mp4">
+              <source src="/static/assets/rabbit.mp4" type="video/mp4">
           </amp-video>
         </amp-story-grid-layer>
         <amp-story-grid-layer template="vertical">
@@ -141,25 +141,25 @@
       <amp-story-page id="page5">
         <amp-story-grid-layer template="vertical" class="noedge">
           <div class="wrapper">
-            <amp-img src="assets/cat.jpg"
+            <amp-img src="/static/assets/cat.jpg"
                 width="720" height="1280"
                 layout="responsive"
                 animate-in="fade-in"
                 animate-in-delay="0.4s">
             </amp-img>
-            <amp-img src="assets/dog.jpg"
+            <amp-img src="/static/assets/dog.jpg"
                 width="720" height="1280"
                 layout="responsive"
                 animate-in="fade-in"
                 animate-in-delay="0.6s">
             </amp-img>
-            <amp-img src="assets/bird.jpg"
+            <amp-img src="/static/assets/bird.jpg"
                 width="720" height="1280"
                 layout="responsive"
                 animate-in="fade-in"
                 animate-in-delay=".8s">
             </amp-img>
-            <amp-img src="assets/rabbit.jpg"
+            <amp-img src="/static/assets/rabbit.jpg"
                 width="720" height="1280"
                 layout="responsive"
                 animate-in="fade-in"
@@ -173,7 +173,7 @@
       </amp-story-page>
 
       <!-- Bookend -->
-      <amp-story-bookend src="bookend.json" layout="nodisplay"></amp-story-bookend>
+      <amp-story-bookend src="/templates/news/bookend.json" layout="nodisplay"></amp-story-bookend>
     </amp-story>
   </body>
 </html>

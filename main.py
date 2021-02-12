@@ -169,7 +169,9 @@ def admineditnews():
 ##?TODO: Admin Profile & Dashboard Pages END
 ##?================================================
 
-
+@app.route('/jd')
+def jd():
+    return render_template("news/job-details.html")
 
 ##?================================================
 ##? Misc Pages
@@ -236,4 +238,4 @@ def not_found(e):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
