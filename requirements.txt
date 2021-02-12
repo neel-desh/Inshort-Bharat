@@ -1,3 +1,7 @@
 gunicorn
 Flask
-
+requests
+itsdangerous
+Jinja2
+MarkupSafe
+Werkzeug
