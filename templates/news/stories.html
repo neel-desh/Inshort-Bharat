@@ -60,8 +60,8 @@
   <body>
     <!-- Cover page -->
     <amp-story standalone
-        title="Joy of Pets"
-        publisher="AMP tutorials"
+        title="Inshort Bharat Stoires"
+        publisher="Neel Deshmukh"
         publisher-logo-src="/static/assets/AMP-Brand-White-Icon.svg"
         poster-portrait-src="/static/assets/cover.jpg">
       <amp-story-page id="cover">
@@ -72,25 +72,28 @@
           </amp-img>
         </amp-story-grid-layer>
         <amp-story-grid-layer template="vertical">
-          <h1>The Joy of Pets</h1>
-          <p>By AMP Tutorials</p>
+          <h1>Inshort Bharat - Web Stories</h1>
+          <p>By neeldeshmukh</p>
         </amp-story-grid-layer>
       </amp-story-page>
 
       <!-- Page 1 (Cat): 1 layer (vertical) -->
-      <amp-story-page id="page1">
+      {% for story in stories %}
+      <amp-story-page id="{{story.id}}">
         <amp-story-grid-layer template="vertical">
-          <h1>Cats</h1>
-          <amp-img src="/static/assets/cat.jpg"
+          <h1>{{story.head}}</h1>
+          <amp-img src="{{story.src}}"
               width="720" height="1280"
               layout="responsive">
           </amp-img>
-          <q>Dogs come when they're called. Cats take a message and get back to you. --Mary Bly</q>
+          <q>{{story.content}}</q>
+
         </amp-story-grid-layer>
       </amp-story-page>
-
+      {% endfor %}
       <!-- Page 2 (Dog): 2 layers (fill + thirds) -->
-      <amp-story-page id="page2">
+
+      <!-- <amp-story-page id="page2">
         <amp-story-grid-layer template="fill">
           <amp-img src="/static/assets/dog.jpg" 
               width="720" height="1280"
@@ -101,10 +104,10 @@
             <h1 grid-area="upper-third">Dogs</h1>
             <p grid-area="lower-third">Dogs were probably the first tame animals. They have accompanied humans for some 10,000 years. Some scientists assert that all dogs, domestic and wild, share a common ancestor in the small South Asian wolf.</p>
         </amp-story-grid-layer>
-      </amp-story-page>
+      </amp-story-page> -->
 
       <!-- Page 3 (Bird): 3 layers (fill + vertical + vertical) + Audio-->
-      <amp-story-page id="page3" background-audio="/static/assets/bird-singing.mp3">
+      <!-- <amp-story-page id="page3" background-audio="/static/assets/bird-singing.mp3">
         <amp-story-grid-layer template="fill">
           <amp-img src="/static/assets/bird.jpg"
               width="720" height="1280"
@@ -117,10 +120,10 @@
         <amp-story-grid-layer template="vertical" class="bottom">
           <q>A bird is three things: Feathers, flight and song, And feathers are the least of these. -Marjorie Allen Seiffert</q>
         </amp-story-grid-layer>
-      </amp-story-page>
+      </amp-story-page> -->
 
       <!-- Page 4 (Rabbit): 3 layers (fill (video) + vertical + vertical) -->
-      <amp-story-page id="page4">
+      <!-- <amp-story-page id="page4">
         <amp-story-grid-layer template="fill">
           <amp-video autoplay loop
                 width="720" height="1280"
@@ -135,10 +138,10 @@
         <amp-story-grid-layer template="vertical" class="bottom">
           <p>Rabbits can learn to follow simple voice commands and come when called by name, and are curious and playful.</p>
         </amp-story-grid-layer>
-      </amp-story-page>
+      </amp-story-page> -->
 
       <!-- Page 5 (Collage): 2 layers + animations -->
-      <amp-story-page id="page5">
+      <!-- <amp-story-page id="page5">
         <amp-story-grid-layer template="vertical" class="noedge">
           <div class="wrapper">
             <amp-img src="/static/assets/cat.jpg"
@@ -170,10 +173,10 @@
         <amp-story-grid-layer template="vertical" class="center-text">
           <p class="banner-text" animate-in="whoosh-in-right">Pets can lower your stress levels!</p>
         </amp-story-grid-layer>
-      </amp-story-page>
+      </amp-story-page> -->
 
       <!-- Bookend -->
-      <amp-story-bookend src="/templates/news/bookend.json" layout="nodisplay"></amp-story-bookend>
+      <amp-story-bookend src="/static/bookend.json" layout="nodisplay"></amp-story-bookend>
     </amp-story>
   </body>
 </html>

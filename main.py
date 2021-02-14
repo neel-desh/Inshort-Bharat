@@ -21,7 +21,26 @@ def index():
 ##==========
 @app.route('/web-stories')
 def webstories():
-    return render_template("news/stories.html")
+    stories = [
+    {
+        "id":1,
+        "head":"Dogs",
+        "src" :"/static/assets/dog.jpg",
+        "content": "Bubus are very very cute ekdum smol & sexy cuties"
+    },
+    {
+        "id":2,
+        "head":"Cats",
+        "src" : "/static/assets/bookend_cats.jpg",
+        "content": "Hello, cats are very cute, only some of them are, rest trash."
+    },
+    {
+        "id":3,
+        "head":"Parrots",
+        "src" : "/static/assets/bird.jpg",
+        "content": "hehehehheahjahfkjhdfkhadkjfhkjahfkjhajkfhdjkhfjakdhfkjdhfkj i bite u"
+    }]
+    return render_template("news/stories.html",stories=stories)
 
 ##?================================================
 ##TODO: News Display Pages
