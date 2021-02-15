@@ -32,14 +32,15 @@ app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app)
 # Mysql connection
-
-database = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="",
-  database="inshort_bharat"
-)
-
+try:
+    database = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+    database="inshort_bharat"
+    )
+except Exception as e:
+    print(e)
 
 
 
