@@ -6,7 +6,6 @@ Jinja2
 MarkupSafe
 Werkzeug
 newsapi
-random
 mysql-connector-python
 flask_simple_geoip
 datetime
