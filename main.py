@@ -1,12 +1,47 @@
 from flask import *
-import hashlib, os
+import hashlib
 from werkzeug.utils import secure_filename
 import requests
+import mysql.connector
+import random
+from flask_mail import Mail, Message
+from newsapi import NewsApiClient
+from flask_simple_geoip import SimpleGeoIP
+import openweather
+import datetime
+
+# create client
+ow = openweather.OpenWeather()
+
 app = Flask(__name__,template_folder='templates')
 app.secret_key = 'this is a very secure string'
 # UPLOAD_FOLDER = 'static/uploads'
 # ALLOWED_EXTENSIONS = set(['jpeg', 'jpg', 'png', 'gif'])
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config.update(GEOIPIFY_API_KEY='at_v1LEHVAlNSSUFAb6T3ONOJcNdy2WU')
+newsapi = NewsApiClient(api_key="18cd6534eefc44db90cb02e7ef2cb9fc")
+simple_geoip = SimpleGeoIP(app)
+
+# Email config
+app.config['MAIL_SERVER']='smtp.stackmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'sem6@neeldeshmukh.com'
+app.config['MAIL_PASSWORD'] = 'Gr5d4aa42'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
+# Mysql connection
+
+database = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="",
+  database="inshort_bharat"
+)
+
+
+
 
 
 ##==========
@@ -14,7 +49,45 @@ app.secret_key = 'this is a very secure string'
 ##==========
 @app.route('/')
 def index():
-    return render_template("index.html")
+    geoip_data = simple_geoip.get_geoip_data()
+    location = geoip_data['location']
+    city = location['city']
+    weather_data = get_weather("mumbai")
+    print(weather_data)
+    headline = ""
+    all_headlines = newsapi.get_top_headlines(category="general",
+    language='en',country="in")
+    news_articles = all_headlines.get('articles')
+    for news in news_articles:
+        headline += news['title'] + " "
+    return render_template("index.html",
+                            headlines=headline,
+                            location=location,
+                            weather_data=weather_data,
+                            day=datetime.datetime.today().strftime('%d'),month=datetime.datetime.today().strftime('%h'))
+
+#date article reference : https://stackoverflow.com/questions/28189442/datetime-current-year-and-month-in-python
+
+#
+# get weather data
+#
+def get_weather(city):
+    api_key = "c52849616ef144426eacbab437ebe3a8"
+    base_url = "http://api.openweathermap.org/data/2.5/weather?"
+    city_name = city
+    weather_data = {
+    }
+    complete_url = base_url + "appid=" + api_key + "&q=" + city_name 
+    response = requests.get(complete_url) 
+    x = response.json() 
+    if x["cod"] != "404": 
+        y = x["main"] 
+        weather_data["celcius"] = round(int(y["temp"]) - 273.15,2)
+        weather_data["humidity"] = y["humidity"] 
+        z = x["weather"] 
+        weather_data["desc"] = z[0]["description"]  
+    return weather_data
+
 
 ##==========
 ##* Web Stories
@@ -80,22 +153,85 @@ def dp():
 ##==========
 ##TODO: Login
 ##==========
-@app.route('/login')
+@app.route('/login',methods = ['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        try:
+            email = request.form['email']
+            password = request.form['password']
+            password = hashlib.md5(password.encode()).hexdigest()
+            query = 'Select name, email, password, type from users'
+            with database.cursor(buffered=True) as cursor:
+                cursor.execute(query)
+                db_data = cursor.fetchall()
+                for row in db_data:
+                    #print(row[1],row[2])
+                    if row[1] == email and row[2] == password:
+                        print(row)
+                        session['name'] = row[0]
+                        session['email'] = email
+                        session['account_type'] = row[3]
+                        return redirect(url_for('index'))
+                    else:
+                        return render_template("authentication/login.html",msg="No data was found")
+        except Exception as e:
+            print(e)
+            database.rollback()
+            err = "some error occured! try again."     
     return render_template("authentication/login.html")
 
 ##==========
 ##TODO: Register
 ##==========
-@app.route('/register')
+@app.route('/register', methods = ['GET', 'POST'])
 def register():
+    if request.method == 'POST':
+        try:
+            name = request.form['name']
+            email = request.form['email']
+            password = request.form['password']
+            account_type = request.form['acc_type']
+            OTP = random.randint(1000,9999)
+            #send otp to user on email
+            print(OTP)
+            user_info = {
+                "name" : name,
+                "email" : email,
+                "password": hashlib.md5(password.encode()).hexdigest(),
+                "account_type" : account_type,
+                "OTP" : OTP
+            }
+            session['user_info'] = user_info
+            msg = Message('OTP', sender = 'sem6@neeldeshmukh.com',
+                                 recipients = [email])
+            msg.body = "OTP: " + OTP
+            mail.send(msg)           
+        except:            
+            err = "some error occured! try again."
+        return redirect(url_for('verifyotp'))
+        
     return render_template("authentication/register.html")
 
 ##==========
 ##TODO: VerifyOTP
 ##==========
-@app.route('/verify-otp')
+@app.route('/verify-otp',methods=['GET','POST'])
 def verifyotp():
+    if request.method == 'POST':
+        try:
+            user_info = session.get('user_info')
+            otp = request.form['OTP']
+            if str(otp) == str(user_info['OTP']):
+                #global database 
+                query = "INSERT INTO users(name, email, password, type) VALUES (%s,%s,%s,%s)"
+                data = (user_info["name"], user_info["email"],user_info["password"],user_info["account_type"])
+                with database.cursor() as cursor:
+                    cursor.execute(query,data)
+                    database.commit()
+                return redirect(url_for('login'))
+        except Exception as e:
+            print(e)
+            #database.rollback()
     return render_template("authentication/verify.html")
 
 ##==========

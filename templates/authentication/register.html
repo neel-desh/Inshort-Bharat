@@ -10,25 +10,26 @@
               <div class="form-header">
                 <h5><i data-feather="edit"></i>Register Account</h5>
               </div>
-              <!-- <div class="account-type">
+              <form action="/register" method="POST">
+
+              <div class="account-type">
                 <label for="idRegisterCan">
-                  <input id="idRegisterCan" type="radio" name="register">
-                  <span>Candidate</span>
+                  <input id="idRegisterCan" type="radio" name="acc_type" value="0">
+                  <span>Viewer</span>
                 </label>
                 <label for="idRegisterEmp">
-                  <input id="idRegisterEmp" type="radio" name="register">
-                  <span>Employer</span>
+                  <input id="idRegisterEmp" type="radio" name="acc_type" value="1">
+                  <span>Editor</span>
                 </label>
-              </div> -->
-              <form action="#">
+              </div>
                 <div class="form-group">
-                  <input type="text" placeholder="Username" class="form-control">
+                  <input type="text" name="name" placeholder="Name" class="form-control">
                 </div>
                 <div class="form-group">
-                  <input type="email" placeholder="Email Address" class="form-control">
+                  <input type="email" name="email" placeholder="Email Address" class="form-control">
                 </div>
                 <div class="form-group">
-                  <input type="password" placeholder="Password" class="form-control">
+                  <input type="password" name="password" placeholder="Password" class="form-control">
                 </div>
                 <div class="more-option terms">
                   <div class="mt-0 terms">
@@ -38,7 +39,7 @@
                     </label>
                   </div>
                 </div>
-                <button class="button primary-bg btn-block">Register</button>
+                <input type="submit" class="button primary-bg btn-block" value="Register">
               </form>
               <div class="shortcut-login">
                 <!-- <span>Or connect with</span>
@@ -46,7 +47,7 @@
                   <a href="#" class="facebook"><i class="fab fa-facebook-f"></i>Facebook</a>
                   <a href="#" class="google"><i class="fab fa-google"></i>Google</a>
                 </div> -->
-                <p>Already have an account? <a href="login.html">Login</a></p>
+                <p>Already have an account? <a href="/login">Login</a></p>
               </div>
             </div>
           </div>

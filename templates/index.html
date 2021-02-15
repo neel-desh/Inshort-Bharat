@@ -8,9 +8,9 @@
               <div class="col-md-8 col-lg">
                 <article class="blog-grid" style="border: solid 0.2px #246df8;">
                   <div class="body">
-                    <span class="date ">22 <span>FEB</span> </span>
-                    <h3>Nallasopara West, Mumbai</h3>
-                    <p>Smoke Weather</p>
+                    <span class="date ">{{day}} <span>{{month}}</span> </span>
+                    <h3>{{location["city"]}},{{location["country"]}}</h3>
+                    <p>{{weather_data["celcius"]}}&deg; &ensp; {{weather_data["humidity"]}} &ensp; {{weather_data["desc"]}}</p>
                   </div>
                 </article>
               </div>
@@ -18,9 +18,13 @@
            </div>
 
    <!-- End Weather Banner -->
-   <!-- Headlines section Scroll -->
-   <!-- End HeadLines section -->
 
+<!-- Headlines -->
+<div class="container">
+  <marquee>{{headlines}}</marquee>
+  
+</div>
+<!-- end headlines -->
     <!-- News -->
     <div class="alice-bg">
       <div class="container">

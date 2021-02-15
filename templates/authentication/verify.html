@@ -9,16 +9,16 @@
               <div class="form-header">
                 <h5><i data-feather="user"></i>Enter OTP</h5>
               </div>
-              <form action="#">
+              <form action="/verify-otp" method="POST">
                 <div class="row">
 
-                      <div class="col-md-8 col-lg-2">
+                      <div class="col-md-8">
                         <div class="form-group">
-                          <input type="text" class="form-control" placeholder="0">
+                          <input type="text" name="OTP" maxlength="4" class="form-control" placeholder="0123">
                         </div>
                       </div>
     
-                      <div class="col-md-8 col-lg-2">
+                      <!-- <div class="col-md-8 col-lg-2">
                         <div class="form-group">
                           <input type="text" class="form-control" placeholder="1">
                         </div>
@@ -32,7 +32,7 @@
                         <div class="form-group">
                           <input type="text" class="form-control" placeholder="3">
                         </div>
-                      </div>
+                      </div> -->
                       <div class="w-100"></div>
                       <div class="col">
                         <div class="form-group terms">
@@ -41,7 +41,7 @@
                             <span class="dot"></span> You accepts our <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a>
                           </label>
                         </div>
-                        <button class="button primary-bg btn-block">Verify</button>
+                        <input type="submit" class="button primary-bg btn-block" value="Verify">
                       </div>
                 </div>
               </form>

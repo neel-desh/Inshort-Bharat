@@ -9,12 +9,12 @@
               <div class="form-header">
                 <h5><i data-feather="user"></i>Login</h5>
               </div>
-              <form action="#">
+              <form action="/login" method="POST">
                 <div class="form-group">
-                  <input type="email" placeholder="Email Address" class="form-control">
+                  <input type="email" name="email" placeholder="Email Address" class="form-control">
                 </div>
                 <div class="form-group">
-                  <input type="password" placeholder="Password" class="form-control">
+                  <input type="password" name="password" placeholder="Password" class="form-control">
                 </div>
                 <div class="more-option">
                   <div class="mt-0 terms">
@@ -23,9 +23,9 @@
                       <span class="dot"></span> Remember Me
                     </label>
                   </div>
-                  <a href="#">Forget Password?</a>
+                  <a href="/forgot-password">Forget Password?</a>
                 </div>
-                <button class="button primary-bg btn-block">Login</button>
+                <input type="submit" class="button primary-bg btn-block" value="Submit">
               </form>
               <div class="shortcut-login">
                 <!-- <span>Or connect with</span>
@@ -41,5 +41,5 @@
       </div>
     </div>
 
-}
+
 {% endblock %}
