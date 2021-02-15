@@ -5,7 +5,7 @@ itsdangerous
 Jinja2
 MarkupSafe
 Werkzeug
-newsapi
+newsapi-python==0.2.3
 mysql-connector-python
 flask_simple_geoip
 datetime
