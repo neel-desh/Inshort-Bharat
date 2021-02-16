@@ -9,7 +9,7 @@ from newsapi import NewsApiClient
 from flask_simple_geoip import SimpleGeoIP
 import openweather
 import datetime
-
+import re
 # create client
 ow = openweather.OpenWeather()
 
@@ -98,9 +98,13 @@ def techo_articles():
 #entertainment route
 @app.route('/entertainment')
 def entertain_articles():
-    return render_template("news/blog.html",category='technology')
+    return render_template("news/blog.html",category='entertainment')
 
-
+@app.route('/article/<category>/<title>',methods=['GET','POST'])
+def scrape_article(category,title):
+    category = category
+    title = title
+    return render_template("news/blog-details-scraped.html",category = category, title = title)
 #
 # get weather data
 #
@@ -439,6 +443,17 @@ def termsncondition():
 ##?
 ##? Misc Pages END
 ##?================================================
+
+##!
+##! Flask Custom Filters
+##!
+@app.template_filter()
+def url_gen(url):
+    """Remove Bad charater and add - where space & trims it"""
+    
+    trim_url = url.rsplit('/', 1)[-1]
+    cleanString = re.sub('\W+','-', trim_url )
+    return cleanString.lower()
 
 
 ##!

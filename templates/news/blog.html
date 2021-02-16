@@ -6,7 +6,8 @@
         <div class="row">
           <div class="col">
             <div class="blog-post-wrapper">
-              {% for article in articles['technology'] %}
+             
+              {% for article in articles[category] %}
               <article class="blog-list">
                 <div class="info">
                   <span class="date">{{article.publishedAt}}</span>
@@ -14,11 +15,11 @@
                  
                 </div>
                 <div class="content">
-                  <h3><a href="blog-details.html">{{article.title}}</a></h3>
+                  <h3><a href="">{{article.title}}</a></h3>
                   <p>{{article.description}}</p>
                 </div>
                 <div class="read-more">
-                  <a href="/article/{{article.url}}" class="button">Read More</a>
+                  <a href="/article/{{category}}/{{article.title | url_gen}}" class="button">Read More</a>
                 </div>
               </article>
               {% endfor %}
