@@ -6,76 +6,22 @@
         <div class="row">
           <div class="col">
             <div class="blog-post-wrapper">
+              {% for article in articles['technology'] %}
               <article class="blog-list">
                 <div class="info">
-                  <span class="date">24th dec,  2020</span>
-                  <span class="author"><a href="#"><i data-feather="user"></i>Robert Karlos</a></span>
-                  <span class="comments"><i data-feather="message-circle"></i>42</span>
+                  <span class="date">{{article.publishedAt}}</span>
+                 
+                 
                 </div>
                 <div class="content">
-                  <h3><a href="blog-details.html">But I must explain to you how all</a></h3>
-                  <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.  but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release...</p>
+                  <h3><a href="blog-details.html">{{article.title}}</a></h3>
+                  <p>{{article.description}}</p>
                 </div>
                 <div class="read-more">
-                  <a href="#" class="button">Read More</a>
+                  <a href="/article/{{article.url}}" class="button">Read More</a>
                 </div>
               </article>
-              <article class="blog-list">
-                <div class="info">
-                  <span class="date">31th dec,  2020</span>
-                  <span class="author"><a href="#"><i data-feather="user"></i>Dorothy Kiger</a></span>
-                  <span class="comments"><i data-feather="message-circle"></i>16</span>
-                </div>
-                <div class="content">
-                  <h3><a href="blog-details.html">Nor again is there anyone who loves pursues</a></h3>
-                  <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.  but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release...</p>
-                </div>
-                <div class="read-more">
-                  <a href="#" class="button">Read More</a>
-                </div>
-              </article>
-              <article class="blog-list">
-                <div class="info">
-                  <span class="date">17th dec,  2020</span>
-                  <span class="author"><a href="#"><i data-feather="user"></i>Robert Karlos</a></span>
-                  <span class="comments"><i data-feather="message-circle"></i>24</span>
-                </div>
-                <div class="content">
-                  <h3><a href="blog-details.html">Because it is pleasure but those</a></h3>
-                  <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.  but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release...</p>
-                </div>
-                <div class="read-more">
-                  <a href="#" class="button">Read More</a>
-                </div>
-              </article>
-              <article class="blog-list">
-                <div class="info">
-                  <span class="date">04th dec,  2020</span>
-                  <span class="author"><a href="#"><i data-feather="user"></i>Samuel Alvarado</a></span>
-                  <span class="comments"><i data-feather="message-circle"></i>51</span>
-                </div>
-                <div class="content">
-                  <h3><a href="blog-details.html">Who chooses to enjoy a pleasure </a></h3>
-                  <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.  but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release...</p>
-                </div>
-                <div class="read-more">
-                  <a href="#" class="button">Read More</a>
-                </div>
-              </article>
-              <article class="blog-list">
-                <div class="info">
-                  <span class="date">21th Nov,  2020</span>
-                  <span class="author"><a href="#"><i data-feather="user"></i>Robert Karlos</a></span>
-                  <span class="comments"><i data-feather="message-circle"></i>42</span>
-                </div>
-                <div class="content">
-                  <h3><a href="blog-details.html">How to pursue pleasure rationally</a></h3>
-                  <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.  but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release...</p>
-                </div>
-                <div class="read-more">
-                  <a href="#" class="button">Read More</a>
-                </div>
-              </article>
+              {% endfor %}
               <div class="pagination-list text-center">
                 <nav class="navigation pagination">
                   <div class="nav-links">

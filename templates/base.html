@@ -9,7 +9,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
-
+    <script async src="https://cdn.ampproject.org/amp-story-player-v0.js"></script>
+    <link href="https://cdn.ampproject.org/amp-story-player-v0.css" rel="stylesheet" type="text/css">
     <!-- External Css -->
     <link rel="stylesheet" href="/static/assets/css/fontawesome-all.min.css">
     <link rel="stylesheet" href="/static/assets/css/themify-icons.css" />
@@ -56,13 +57,16 @@
               </div>
               <div class="top-nav">
                 <div class="dropdown header-top-account login-modals">
-                  <button title="Title" type="button" data-toggle="modal" data-target="#exampleModalLong">Login</button>
-                  <button title="Title" type="button" data-toggle="modal" data-target="#exampleModalLong2">Registration</button>
+                  <button title="Login" type="button" data-toggle="modal" data-target="#exampleModalLong"><a href="/login">Login</a></button>
+                  <button title="Register" type="button" data-toggle="modal" data-target="#exampleModalLong2"><a href="/register">Registration</a>  </button>
                 </div>
-                <select class="selectpicker select-language" data-width="fit">
-                  <option data-content='<span class="flag-icon flag-icon-us"></span> English'>English</option>
-                  <option  data-content='<span class="flag-icon flag-icon-in"></span> Hindi'>Hindi</option>
-                </select>
+                <form action="/?lang=hindi" method="get">
+                  <select class="selectpicker select-language" data-width="fit" onchange="this.form.submit()">
+                    <option data-content='<span class="flag-icon flag-icon-us"></span> English'>English</option>
+                    <option selected data-content='<span class="flag-icon flag-icon-in"></span> Hindi'>Hindi</option>
+                  </select>
+                </form>
+
               </div>
             </div>
             <nav class="navbar navbar-expand-lg cp-nav-2">
@@ -83,9 +87,9 @@
                     </ul>
                   </li>
 
-                  <li class="menu-item"><a href="/category/tech">Tech</a></li>
-                  <li class="menu-item"><a href="/category/astrology">Astrology</a></li>
-                  <li class="menu-item"><a href="/category/entertainment">Entertainment</a></li>
+                  <li class="menu-item"><a href="/technology">Technology</a></li>
+                  <!-- <li class="menu-item"><a href="/category/astrology">Astrology</a></li> -->
+                  <li class="menu-item"><a href="/entertainment">Entertainment</a></li>
 
                   <!-- <li class="menu-item dropdown">
                     <a title="" href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Pages</a>
@@ -123,101 +127,6 @@
       </div>
     </header>
 
-    <!-- Modal -->
-    <div class="account-entry">
-      <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title"><i data-feather="user"></i>Login</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form action="#">
-                <div class="form-group">
-                  <input type="email" placeholder="Email Address" class="form-control">
-                </div>
-                <div class="form-group">
-                  <input type="password" placeholder="Password" class="form-control">
-                </div>
-                <div class="more-option">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                    <label class="form-check-label" for="defaultCheck1">
-                      Remember Me
-                    </label>
-                  </div>
-                  <a href="#">Forget Password?</a>
-                </div>
-                <button class="button primary-bg btn-block">Login</button>
-              </form>
-              <div class="shortcut-login">
-                <!-- <span>Or connect with</span>
-                <div class="buttons">
-                  <a href="#" class="facebook"><i class="fab fa-facebook-f"></i>Facebook</a>
-                  <a href="#" class="google"><i class="fab fa-google"></i>Google</a>
-                </div> -->
-                <p>Don't have an account? <a href="#">Register</a></p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal fade" id="exampleModalLong2" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title"><i data-feather="edit"></i>Registration</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <!-- <div class="account-type">
-                <label for="idRegisterCan">
-                  <input id="idRegisterCan" type="radio" name="register">
-                  <span>Candidate</span>
-                </label>
-                <label for="idRegisterEmp">
-                  <input id="idRegisterEmp" type="radio" name="register">
-                  <span>Employer</span>
-                </label>
-              </div> -->
-              <form action="#">
-                <div class="form-group">
-                  <input type="text" placeholder="Username" class="form-control">
-                </div>
-                <div class="form-group">
-                  <input type="email" placeholder="Email Address" class="form-control">
-                </div>
-                <div class="form-group">
-                  <input type="password" placeholder="Password" class="form-control">
-                </div>
-                <div class="more-option terms">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
-                    <label class="form-check-label" for="defaultCheck2">
-                      I accept the <a href="#">terms & conditions</a>
-                    </label>
-                  </div>
-                </div>
-                <button class="button primary-bg btn-block">Register</button>
-              </form>
-              <div class="shortcut-login">
-                <!-- <span>Or connect with</span>
-                <div class="buttons">
-                  <a href="#" class="facebook"><i class="fab fa-facebook-f"></i>Facebook</a>
-                  <a href="#" class="google"><i class="fab fa-google"></i>Google</a>
-                </div> -->
-                <p>Already have an account? <a href="#">Login</a></p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <!-- Header End -->
  
 <!-- Block Content -->
@@ -289,13 +198,13 @@
             </div>
             <div class="col-lg-2 col-sm-6">
               <div class="footer-widget footer-shortcut-link">
-                <!-- <h4>Employers</h4> -->
+                <h4>Editor Panel</h4>
                 <div class="widget-inner">
-                  <!-- <ul>
-                    <li><a href="#">Create Account</a></li>
-                    <li><a href="#">Products/Service</a></li>
-                    <li><a href="#">Post a Job</a></li>
-                  </ul> -->
+                  <ul>
+                    <li><a href="/admin-account">Admin Dashboard</a></li>
+                    <li><a href="/admin-edit-account">Admin Edit Dashboard</a></li>
+                    
+                  </ul>
                 </div>
               </div>
             </div>
@@ -303,13 +212,13 @@
               <div class="footer-widget footer-newsletter">
                 <h4>Newsletter</h4>
                 <p>Get e-mail updates about our latest news and Special offers.</p>
-                <form action="#" class="newsletter-form form-inline">
+                <form id="newsletter-submit" action="/newsletter" class="newsletter-form form-inline">
                   <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Email address...">
+                    <input name="email" type="text" class="form-control" placeholder="Email address...">
                   </div>
                   <button class="btn button primary-bg">Submit<i class="fas fa-caret-right"></i></button>
-                  <p class="newsletter-error">0 - Please enter a value</p>
-                  <p class="newsletter-success">Thank you for subscribing!</p>
+                  
+                  <p id="success" class="newsletter-success">Thank you for subscribing!</p>
                 </form>
               </div>
             </div>
@@ -364,5 +273,36 @@
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
     <script src="/static/js/map.js"></script>
+    <script>
+      // this is the id of the form
+      $("#newsletter-submit").submit(function(e) {
+      
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+      
+        var form = $(this);
+        var url = form.attr('action');
+        
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(), // serializes the form's elements.
+               success: function(data)
+               {
+                    $('#success').show().fadeOut(3000,()=>{$('#success').hide()})// show response
+               },
+               error:function(data)
+               {
+                    //$('#failed').show().fadeOut(3000,()=>{$('#failed').hide()})// show response
+                    console.log(data)
+               }
+              
+             });
+      
+        
+      });
+      </script>
+{% block extrascript %}
+
+{% endblock %}
   </body>
 </html>

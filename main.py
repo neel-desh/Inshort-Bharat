@@ -28,7 +28,7 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'sem6@neeldeshmukh.com'
 app.config['MAIL_PASSWORD'] = 'Gr5d4aa42'
 app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USE_SSL'] = False
 
 mail = Mail(app)
 # Mysql connection
@@ -70,6 +70,38 @@ def index():
 #date article reference : https://stackoverflow.com/questions/28189442/datetime-current-year-and-month-in-python
 
 #
+#* Scraper & application object store
+#
+@app.context_processor
+def category_data():
+    response_obj = newsapi.get_everything(
+                                    language='en',
+                                    q='Technology')
+    Tech_all_articles = response_obj["articles"]
+    response_obj1 = newsapi.get_everything(
+                                    language='en',
+                                    q='entertainment')
+    Entertainment_all_articles = response_obj1["articles"]
+    articles = {}
+    articles["technology"] = Tech_all_articles
+    articles["entertainment"] =Entertainment_all_articles
+    return dict(articles = articles)
+
+#
+# Blog.html is used here. make other blog page for non scrape articles later
+#    
+#Tech route
+@app.route('/technology')
+def techo_articles():
+    return render_template("news/blog.html",category='technology')
+
+#entertainment route
+@app.route('/entertainment')
+def entertain_articles():
+    return render_template("news/blog.html",category='technology')
+
+
+#
 # get weather data
 #
 def get_weather(city):
@@ -88,6 +120,27 @@ def get_weather(city):
         z = x["weather"] 
         weather_data["desc"] = z[0]["description"]  
     return weather_data
+
+# from GoogleNews import GoogleNews
+# googlenews = GoogleNews()
+
+#
+#? Scraped News Category data using google news module  
+#
+# @app.route('/category/<category_name>',methods=['GET','POST'])
+# def category_scrape(category_name):
+#     if request.method == 'GET':
+#         category_name = category_name
+#         if not session[category_name]:
+#             response_obj = newsapi.get_everything(
+#                                             language='en',
+#                                             category=category_name)
+#             all_articles = response_obj["articles"]
+#             session[category_name] = all_articles
+
+#         else:
+#             pass   
+#     return "hi"
 
 
 ##==========
@@ -140,7 +193,6 @@ def newsgrids():
 @app.route('/dp')
 def dp():
     return render_template("news/blog-details.html")
-
 
 ##?
 ##TODO: News Display Pages End
@@ -335,9 +387,12 @@ def jd():
 ##
 ##* NewsLetter
 ##
-@app.route("/newsletter")
+@app.route("/newsletter",methods=['GET','POST'])
 def newsletter():
-    return redirect(url_for('index'))
+    if request.method == 'POST':
+        email = request.form['email']
+        print(email)
+    return "Thanks!"
 
 ##
 ##* About Us
@@ -356,8 +411,16 @@ def faq():
 ##
 ##* Contact Us
 ##
-@app.route("/contact-us")
+@app.route("/contact-us",methods=['GET','POST'])
 def contactus():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        subject = request.form['subject']
+        phone = request.form['phoneno']
+        message = request.form['message']
+        print(name,email,subject,phone,message)
+        return "Nice, work bubu <3 "
     return render_template("contactus.html")
 
 ##

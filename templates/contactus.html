@@ -14,46 +14,46 @@
                   <div class="contact-address">
                     <h4>Contact Info</h4>
                     <ul>
-                      <li><i data-feather="map-pin"></i>International Noel Nawab Street Los Alamitos CA 90720, USA</li>
-                      <li><i data-feather="mail"></i>supportjob@gmail.com example@yourmail.com</li>
-                      <li><i data-feather="phone-call"></i>+99 06 1234 566 88</li>
+                      <li><i data-feather="map-pin"></i>Nalasopara West</li>
+                      <li><i data-feather="mail"></i>deshmukhneel@gmail.com</li>
+                      <li><i data-feather="phone-call"></i>+91 9876543219</li>
                     </ul>
                   </div>
                 </div>
                 <div class="col-lg-7 offset-lg-1">
                   <div class="contact-form">
                     <h4>Keep In Touch</h4>
-                    <form action="#" id="contactForm">
+                    <form id="contact-form" action="/contact-us" method="POST">
                       <div class="row">
                         <div class="col-sm-6">
                           <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Name">
+                            <input name="name" type="text" class="form-control" placeholder="Name">
                           </div>
                         </div>
                         <div class="col-sm-6">
                           <div class="form-group">
-                            <input type="email" class="form-control" placeholder="Email">
+                            <input name="email" type="email" class="form-control" placeholder="Email">
                           </div>
                         </div>
                         <div class="col-sm-6">
                           <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Phone">
+                            <input name="phoneno" type="text" class="form-control" placeholder="Phone">
                           </div>
                         </div>
                         <div class="col-sm-6">
                           <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Subject">
+                            <input name="subject" type="text" class="form-control" placeholder="Subject">
                           </div>
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <textarea class="form-control" placeholder="Message"></textarea>
+                            <textarea name="message" class="form-control" placeholder="Message"></textarea>
                           </div>
                         </div>
                       </div>
-                      <button class="button">Submit</button>
-                      <p class="input-success">Your message has been sent. Thanks for contact.</p>
-                      <p class="input-error">Something went wrong while sending. Please try leter.</p>
+                      <button id="contact" class="button">Submit</button>
+                      <p id="success" class="input-success">Your message has been sent. Thanks for contact.</p>
+                      <p id="failed" class="input-error">Something went wrong while sending. Please try leter.</p>
                     </form>
                   </div>
                 </div>
@@ -72,4 +72,34 @@
     </div>
 
 
+    {% endblock %}
+
+    {% block extrascript %}
+<script>
+// this is the id of the form
+$("#contact-form").submit(function(e) {
+
+  e.preventDefault(); // avoid to execute the actual submit of the form.
+
+  var form = $(this);
+  var url = form.attr('action');
+  
+  $.ajax({
+         type: "POST",
+         url: url,
+         data: form.serialize(), // serializes the form's elements.
+         success: function(data)
+         {
+              $('#success').show().fadeOut(3000,()=>{$('#success').hide()})// show response
+         },
+         error:function(data)
+         {
+              $('#failed').show().fadeOut(3000,()=>{$('#failed').hide()})// show response
+         }
+        
+       });
+
+  
+});
+</script>
     {% endblock %}
