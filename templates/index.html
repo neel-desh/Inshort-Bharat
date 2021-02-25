@@ -27,6 +27,8 @@
 </div>
 <!-- end headlines -->
 <!-- News -->
+
+
 <div class="alice-bg">
   <div class="container">
     <div class="row">
@@ -75,12 +77,17 @@
             </p>
           </div>
           <div class="read-more">
-            <span class="buttons" style="padding: 5px">
-              <a href="#" class="favourite"><i data-feather="heart"></i></a
-            ></span>
-
+          
+              <!-- Here comes the news id from for looop -->
+            <button href="/at-fav?nid=1" class="favourite"><i data-feather="heart"></i></button>
+            
             <a href="#" class="button">Read More</a>
-
+            <span id="success" style="display: none;" class="alert alert-success">
+              <strong>Success!</strong>.
+            </span>
+            <span id="failed" style="display: none;"  class="alert alert-danger">
+              <strong>Some Error!</strong>.
+            </span>
             <br />
             <p style="padding-top: 5px" class="deadline">
               Published: Oct 31, 2020
@@ -147,4 +154,27 @@
   </div>
 </div>
 <!-- Top Categories End -->
+{% endblock %}
+{% block extrascript %}
+<script>
+//This Scripts adds data to the fav and readlater
+  $(".favourite").click(function(e) {
+    e.preventDefault(); // avoid to execute the actual submit of the form.   
+    $.ajax({
+           type: "POST",
+           url: $(this).attr("href"),
+           // serializes the form's elements.
+           success: function(data)
+           {
+             //$(this).animate({"background-color":"hotpink"},4000).show(1000);
+               $(this).next().next().show().fadeOut(3000,()=>{$('#success').hide()})// show response
+           },
+           error:function(data)
+           {
+                $(this).next().next().next().show().fadeOut(3000,()=>{$('#failed').hide()})// show response
+                //console.log(data)
+           }          
+         });
+  });
+</script>
 {% endblock %}

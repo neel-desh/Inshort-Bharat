@@ -1,5 +1,8 @@
+
 from flask import *
 import hashlib
+import os
+import flask
 from werkzeug.utils import secure_filename
 import requests
 import mysql.connector
@@ -10,6 +13,24 @@ from flask_simple_geoip import SimpleGeoIP
 import openweather
 import datetime
 import re
+import pyrebase
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer 
+
+#Firebase Config
+firebaseConfig = {
+    "apiKey": "AIzaSyDmRPCLhyOVASlBhHWwZ3slD0nZr9VWOlE",
+    "authDomain": "inshortbharat.firebaseapp.com",
+    "databaseURL": "https://inshortbharat-default-rtdb.firebaseio.com",
+    "projectId": "inshortbharat",
+    "storageBucket": "inshortbharat.appspot.com",
+    "messagingSenderId": "381240062652",
+    "appId": "1:381240062652:web:a99ed5dda628ddb59dd6b9",
+    "measurementId": "G-4ZP05FMFRR"
+  };
+firebase = pyrebase.initialize_app(firebaseConfig)
+storage = firebase.storage()
+
+
 # create client
 ow = openweather.OpenWeather()
 
@@ -24,10 +45,10 @@ simple_geoip = SimpleGeoIP(app)
 
 # Email config
 app.config['MAIL_SERVER']='smtp.stackmail.com'
-app.config['MAIL_PORT'] = 465
+app.config['MAIL_PORT'] = 587
 app.config['MAIL_USERNAME'] = 'sem6@neeldeshmukh.com'
 app.config['MAIL_PASSWORD'] = 'Gr5d4aa42'
-app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 
 mail = Mail(app)
@@ -217,17 +238,18 @@ def login():
             email = request.form['email']
             password = request.form['password']
             password = hashlib.md5(password.encode()).hexdigest()
-            query = 'Select name, email, password, type from users'
+            query = 'Select id, name, email, password, type from users'
             with database.cursor(buffered=True) as cursor:
                 cursor.execute(query)
                 db_data = cursor.fetchall()
                 for row in db_data:
                     #print(row[1],row[2])
-                    if row[1] == email and row[2] == password:
+                    if row[2] == email and row[3] == password:
                         print(row)
-                        session['name'] = row[0]
+                        session['user_id'] = row[0]
+                        session['name'] = row[1]
                         session['email'] = email
-                        session['account_type'] = row[3]
+                        session['account_type'] = row[4]
                         return redirect(url_for('index'))
                     else:
                         return render_template("authentication/login.html",msg="No data was found")
@@ -243,28 +265,29 @@ def login():
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        try:
-            name = request.form['name']
-            email = request.form['email']
-            password = request.form['password']
-            account_type = request.form['acc_type']
-            OTP = random.randint(1000,9999)
-            #send otp to user on email
-            print(OTP)
-            user_info = {
-                "name" : name,
-                "email" : email,
-                "password": hashlib.md5(password.encode()).hexdigest(),
-                "account_type" : account_type,
-                "OTP" : OTP
-            }
-            session['user_info'] = user_info
-            msg = Message('OTP', sender = 'sem6@neeldeshmukh.com',
-                                 recipients = [email])
-            msg.body = "OTP: " + OTP
-            mail.send(msg)           
-        except:            
-            err = "some error occured! try again."
+       # try:
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        account_type = request.form['acc_type']
+        OTP = random.randint(1000,9999)
+        #send otp to user on email
+        print(OTP)
+        user_info = {
+            "name" : name,
+            "email" : email,
+            "password": hashlib.md5(password.encode()).hexdigest(),
+            "account_type" : account_type,
+            "OTP" : OTP
+        }
+        session['user_info'] = user_info
+        msg = Message('OTP', sender = 'sem6@neeldeshmukh.com',
+                                recipients = [email])
+        msg.body = "OTP: " + str(OTP)
+        mail.send(msg)           
+        # except Exception as e:      
+        #     print(e)      
+        #     err = "some error occured! try again."
         return redirect(url_for('verifyotp'))
         
     return render_template("authentication/register.html")
@@ -275,19 +298,29 @@ def register():
 @app.route('/verify-otp',methods=['GET','POST'])
 def verifyotp():
     if request.method == 'POST':
-        try:
-            user_info = session.get('user_info')
-            otp = request.form['OTP']
-            if str(otp) == str(user_info['OTP']):
-                #global database 
-                query = "INSERT INTO users(name, email, password, type) VALUES (%s,%s,%s,%s)"
-                data = (user_info["name"], user_info["email"],user_info["password"],user_info["account_type"])
-                with database.cursor() as cursor:
-                    cursor.execute(query,data)
-                    database.commit()
-                return redirect(url_for('login'))
-        except Exception as e:
-            print(e)
+        # try:
+        print("1")
+        user_info = session.get('user_info')
+        print("2")
+        print(user_info)
+        otp = request.form['OTP']
+        print(otp == user_info['OTP'])
+        print("3")
+        if (int(otp) != int(user_info['OTP'])):
+            return render_template_string("Error Aya!")
+        else:
+            print("In IF")
+            #global database 
+            query = "INSERT INTO users(name, email, password, type) VALUES (%s,%s,%s,%s)"
+            data = (user_info["name"], user_info["email"],user_info["password"],user_info["account_type"])
+            with database.cursor() as cursor:
+                print("IN cursor")
+                cursor.execute(query,data)
+                database.commit()
+            session.pop('user_info', None)
+            return redirect(url_for('login'))
+        # except Exception as e:
+        #     print(e)
             #database.rollback()
     return render_template("authentication/verify.html")
 
@@ -310,6 +343,7 @@ def changepassword():
 ##==========
 @app.route('/logout')
 def logout():
+    session.clear()
     return redirect(url_for('index'))
 
 ##?
@@ -340,6 +374,37 @@ def editaccount():
 def viewbookmarked():
     return render_template("profile/dashboard-bookmark.html")
 
+##==========
+##TODO: Add to Favourite
+##==========
+@app.route('/at-fav',methods=['GET','POST'])
+def at_fav():
+    #TODO: Login Check Not Added Yet
+    news_id = request.args.get('nid')
+    # query = "INSERT INTO favorites(post_id, user_id) VALUES (%d,%d)"
+    # data = (int(news_id),int(session['user_id']))
+    # with database.cursor() as cursor:
+    #     cursor.execute(query,data)
+    #     database.commit()   
+    return jsonify({'msg':'Added To Fav'})
+
+##==========
+##TODO: Add to Read Later
+##==========
+@app.route('/at-rl',methods=['GET','POST'])
+def at_rl():
+    #TODO: Login Check Not added
+    news_id = request.args.get('nid')
+    query = "INSERT INTO readlater(post_id, user_id) VALUES (%d,%d)"
+    data = (int(news_id),int(session['user_id']))
+    with database.cursor() as cursor:
+        cursor.execute(query,data)
+        database.commit()   
+    return flask.Response(status=200)
+
+
+
+
 ##?
 ##?TODO: User Profile & Dashboard Pages END
 ##?================================================
@@ -354,6 +419,10 @@ def viewbookmarked():
 ##==========
 @app.route('/admin-account')
 def adminaccount():
+    if 'account_type' not in session:
+        return redirect(url_for("index"))
+    if int(session["account_type"]) != 1:
+        return redirect(url_for("index"))
     return render_template("profile/admin/admin-account.html")
 
 ##==========
@@ -361,13 +430,38 @@ def adminaccount():
 ##==========
 @app.route('/admin-edit-account')
 def admineditaccount():
+    if 'account_type' not in session:
+        return redirect(url_for("index"))
+    if int(session["account_type"]) != 1:
+        return redirect(url_for("index"))
     return render_template("profile/admin/admin-dashboard-edit-profile.html")
 
 ##==========
 ##TODO: Create Admin - News
 ##==========
-@app.route('/create-news')
+@app.route('/create-news',methods=['GET','POST'])
 def admincreatenews():
+    if 'account_type' not in session:
+        return redirect(url_for("index"))
+    if int(session["account_type"]) != 1:
+        return redirect(url_for("index"))
+    if request.method == 'POST':
+        image_link = ""
+        title = request.form['title']
+        slug = slug_gen(title)
+        #upload this to firebase storage and get url
+        header_image = request.files['image']
+        header_image.save(os.path.join('/static/', header_image.filename))   
+        data = storage.child("1/").put(header_image)
+        image_link = storage.child("1/").get_url(data['downloadTokens'])
+        category = request.form['category']
+        content = request.form['content-data']
+        locality = request.form['locality']
+        send_bulk = request.form['bulk-email']
+        #publish_by = session['user_id'] 
+        print(title,slug,category,content,locality,send_bulk,image_link)
+        return "news created"
+    
     return render_template("profile/admin/admin-dashboard-post-news.html")
 
 ##==========
@@ -375,6 +469,10 @@ def admincreatenews():
 ##==========
 @app.route('/edit-news')
 def admineditnews():
+    if 'account_type' not in session:
+        return redirect(url_for("index"))
+    if int(session["account_type"]) != 1:
+        return redirect(url_for("index"))
     return render_template("profile/admin/admin-dashboard-manage-news.html")
 
 ##?
@@ -413,7 +511,7 @@ def faq():
     return render_template("faq.html")
 
 ##
-##* Contact Us
+##TODO: Contact Us
 ##
 @app.route("/contact-us",methods=['GET','POST'])
 def contactus():
@@ -424,6 +522,7 @@ def contactus():
         phone = request.form['phoneno']
         message = request.form['message']
         print(name,email,subject,phone,message)
+        
         return "Nice, work bubu <3 "
     return render_template("contactus.html")
 
@@ -439,6 +538,7 @@ def privacypolicy():
 ##
 @app.route("/terms-and-condition")
 def termsncondition():
+    #sendBulkEmail()
     return render_template("terms-and-condition.html")
 ##?
 ##? Misc Pages END
@@ -455,6 +555,38 @@ def url_gen(url):
     cleanString = re.sub('\W+','-', trim_url )
     return cleanString.lower()
 
+def slug_gen(title):
+    """Remove Bad charater and add - where space & trims it"""
+    
+    trim_url = title.rsplit('/', 1)[-1]
+    cleanString = re.sub('\W+','-', trim_url )
+    return cleanString.lower()
+
+def sentiment_scores(sentence):
+    sent_tag = ""
+    sid_obj = SentimentIntensityAnalyzer()
+    sentiment_dict = sid_obj.polarity_scores(sentence)
+    if(sentiment_dict['compound'] >= 0.05):
+        sent_tag = "Positive"
+    elif(sentiment_dict['compound'] <= - 0.05): 
+        sent_tag = "Negative"
+    else:
+        sent_tag = "Neutral" 
+    return sent_tag
+
+def sendBulkEmail(news_id=1):
+    query = "select email from newsletter"
+    receivers = []
+    with database.cursor(buffered=True) as cursor:
+            cursor.execute(query)
+            db_data = cursor.fetchall()
+            for row in db_data:
+                print(row[0])
+                receivers.append(row[0])
+    #send email from here
+    msg = Message('Hello', sender = 'sem6@neeldeshmukh.com', recipients = receivers)
+    msg.body = "Hello Flask message sent from Flask-Mail"
+    mail.send(msg)
 
 ##!
 ##! Server Error Handler

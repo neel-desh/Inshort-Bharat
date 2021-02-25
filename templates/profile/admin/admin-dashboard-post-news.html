@@ -1,170 +1,79 @@
 
 {% extends "profile/admin/admin-dashboard.html" %}
   {% block dashboardsection %}
-                <form action="#" class="padding-top-70 dashboard-form job-post-form">
+                <form id="create-news" action="/create-news" method="POST" class=" dashboard-form job-post-form" enctype="multipart/form-data">
                   <div class="dashboard-section basic-info-input">
-                    <h4><i data-feather="user-check"></i>Post A Job</h4>
+                    <h4><i data-feather="user-check"></i>Post News</h4>
                     <div class="form-group row">
-                      <label class="col-md-3 col-form-label">Job Title</label>
+                      <label class="col-md-3 col-form-label">Title</label>
                       <div class="col-md-9">
-                        <input type="text" class="form-control" placeholder="Your job title here">
+                        <input name="title"  type="text" class="form-control" placeholder="Your News title here">
                       </div>
                     </div>
+                  
+                      <!-- <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Slug</label>
+                        <div class="col-md-9">
+                          <input type="text" class="form-control" readonly>
+                        </div>
+                      </div>  -->
+
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Header image</label>
+                        <div class="col-md-9">
+                          <input id="image" name="image" type="file"  class="form-control">
+                        </div>
+                      </div> 
+
                     <div class="row">
-                      <label class="col-md-3 col-form-label">Job Summery</label>
+                      <label class="col-md-3 col-form-label">Category</label>
                       <div class="col-md-9">
                         <div class="row">
                           <div class="col-md-6">
                             <div class="form-group">
-                              <select class="form-control">
+                              <select name="category" class="form-control">
                                 <option>Select Category</option>
-                                <option>Accounting / Finance</option>
-                                <option>Health Care</option>
-                                <option>Garments / Textile</option>
-                                <option>Telecommunication</option>
+                                <option value="accounting">Accounting</option>
+                                <option value="technology">Technology</option>
+                                <option value="astrology">Astrology</option>
+                                <option value="crime">Crime</option>
+                                <option value="education">Education</option>
+                                <option value="cricket">Cricket</option>
                               </select>
                               <i class="fa fa-caret-down"></i>
                             </div>
                           </div>
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <input type="text" class="form-control" placeholder="Job Location">
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <select class="form-control">
-                                <option>Job Type</option>
-                                <option>Part Time</option>
-                                <option>Full Time</option>
-                                <option>Temperory</option>
-                                <option>Permanent</option>
-                                <option>Freelance</option>
-                              </select>
-                              <i class="fa fa-caret-down"></i>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <select class="form-control">
-                                <option>Experience (Optional)</option>
-                                <option>Less than 1 Year</option>
-                                <option>2 Year</option>
-                                <option>3 Year</option>
-                                <option>4 Year</option>
-                                <option>Over 5 Year</option>
-                              </select>
-                              <i class="fa fa-caret-down"></i>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <input type="text" class="form-control" placeholder="Salary Range">
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <select class="form-control">
-                                <option>Qualification</option>
-                                <option>Matriculation</option>
-                                <option>Intermidiate</option>
-                                <option>Gradute</option>
-                              </select>
-                              <i class="fa fa-caret-down"></i>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <select class="form-control">
-                                <option>Gender</option>
-                                <option>Male</option>
-                                <option>Female</option>
-                              </select>
-                              <i class="fa fa-caret-down"></i>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <input type="text" class="form-control" placeholder="Vacancy">
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-group datepicker">
-                              <input type="date" class="form-control">
-                            </div>
-                          </div>
+
                         </div>
                       </div>
                     </div>
                     <div class="row">
-                      <label class="col-md-3 col-form-label">Job Description</label>
+                      <label class="col-md-3 col-form-label">News Description</label>
                       <div class="col-md-9">
-                        <textarea id="mytextarea" class="tinymce-editor tinymce-editor-1" placeholder="Description text here"></textarea>
+                        <textarea name="content" id="mytextarea" class="tinymce-editor tinymce-editor-1" placeholder="Description text here"></textarea>
                       </div>
                     </div>
-                    <div class="row">
-                      <label class="col-md-3 col-form-label">Responsibilities</label>
-                      <div class="col-md-9">
-                        <textarea id="mytextarea2" class="tinymce-editor tinymce-editor-2" placeholder="Responsibilities (Optional)"></textarea>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <label class="col-md-3 col-form-label">Education</label>
-                      <div class="col-md-9">
-                        <textarea id="mytextarea3" class="tinymce-editor tinymce-editor-2" placeholder="Education (Optional)"></textarea>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <label class="col-md-3 col-form-label">Other Benefits</label>
-                      <div class="col-md-9">
-                        <textarea id="mytextarea4" class="tinymce-editor tinymce-editor-2" placeholder="Description text here"></textarea>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-3 col-form-label">Your Location</label>
+                      <div class="form-group row">
+                      <label class="col-md-3 col-form-label">Location</label>
                       <div class="col-md-9">
                         <div class="row">
                           <div class="col-md-6">
                             <div class="form-group">
-                              <select class="form-control">
-                                <option>Country</option>
-                                <option>USA</option>
-                                <option>United Kindom</option>
-                                <option>Spain</option>
-                                <option>France</option>
-                                <option>Germany</option>
+                              <select  name="locality" class="form-control">
+                                <option>State</option>
+                                <option value="maharashtra">Maharahstra</option>
+                                <option value="delhi">Delhi</option>
+                                <option value="up">Uttar Pradesh</option>
+                                <option value="madras">Madras</option>
+                                <option value="kolkata">kolkata</option>
                               </select>
                               <i class="fa fa-caret-down"></i>
-                            </div>
-                            <div class="form-group">
-                              <select class="form-control" id="exampleFormControlSelect11">
-                                <option>City</option>
-                                <option>New Work</option>
-                                <option>Washington D.C</option>
-                                <option>California</option>
-                                <option>Las Vegas</option>
-                              </select>
-                              <i class="fa fa-caret-down"></i>
-                            </div>
-                            <div class="form-group">
-                              <input type="text" class="form-control" placeholder="Zip Code">
-                            </div>
-                            <div class="form-group">
-                              <input type="text" class="form-control" placeholder="Your Location">
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="set-location">
-                              <h5>Pin Location</h5>
-                              <div id="map-area" class="contact-location">
-                                <div class="cp-map" id="location" data-lat="40.713355" data-lng="-74.005535" data-zoom="10"></div>
-                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                       <label class="col-md-3 col-form-label">About Company</label>
                       <div class="col-md-9">
                         <div class="row">
@@ -185,39 +94,33 @@
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> -->
                     <div class="row">
-                      <label class="col-md-3 col-form-label">Select Package</label>
+                      <label class="col-md-3 col-form-label">Send News In Email</label>
                       <div class="col-md-9">
                         <div class="package-select">
                           <div class="package-select-inputs">
                             <div class="form-group">
-                              <input class="custom-radio" type="radio" id="radio_1" name="my-radio" value="1" checked>
+                              <input name="bulk-email" class="custom-radio" type="radio" id="radio_1"  value="1">
                               <label for="radio_1">
-                              <span class="dot"></span> <span class="package-type">Free</span> $0.00
+                              <span class="dot"></span> <span class="package-type">Yes</span>
                             </label>
                             </div>
                             <div class="form-group">
-                              <input class="custom-radio" type="radio" id="radio_2" name="my-radio" value="1">
+                              <input name="bulk-email" class="custom-radio" type="radio" id="radio_2"  value="0">
                               <label for="radio_2">
-                              <span class="dot"></span> <span class="package-type">Stater</span> $22.00
-                            </label>
-                            </div>
-                            <div class="form-group">
-                              <input class="custom-radio" type="radio" id="radio_3" name="my-radio" value="1">
-                              <label for="radio_3">
-                              <span class="dot"></span> <span class="package-type">Advance</span> $44.00
+                              <span class="dot"></span> <span class="package-type">No</span>
                             </label>
                             </div>
                           </div>
-                          <div class="payment-method">
+                          <!-- <div class="payment-method">
                             <a href="#" class="credit active"><i class="fas fa-credit-card"></i>Credit Card</a>
                             <a href="#" class="paypal"><i class="fab fa-cc-paypal"></i>PayPal</a>
-                          </div>
+                          </div> -->
                         </div>
                       </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                       <div class="col-md-9 offset-md-3">
                         <div class="form-group terms">
                           <input class="custom-radio" type="checkbox" id="radio-4" name="termsandcondition">
@@ -226,13 +129,69 @@
                           </label>
                         </div>
                       </div>
-                    </div>
+                    </div> -->
                     <div class="form-group row">
-                      <label class="col-md-3 col-form-label"></label>
+                      
                       <div class="col-md-9">
-                        <button class="button">Post Your Job</button>
+                        <input type="submit" class="button" value="Publish News">
+                        <div id="data-inserted" class="spinner-border" style="display:none; width: 3rem; height: 3rem;" role="status">
+                          
+                        </div>
                       </div>
+
                     </div>
+<div id="data-inserted-msg" style="display: none;" class="form-group row">
+  <div class="col-md-9 alert alert-success" role="alert">
+    News Published Success
+  </div>
+</div>
+<div id="data-failed-msg" style="display: none;" class="form-group row">
+  <div class="col-md-9 alert alert-warning" role="alert">
+    Some Error Occured
+  </div>
+</div>
                   </div>
                 </form>
              {% endblock %}
+<!-- Custom Script -->
+{% block customscript %}
+<script>
+   // this is the id of the form
+   $("#create-news").submit(function(e) {
+      $('#data-inserted').show()
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+  
+    var form = $(this);
+    var url = form.attr('action');
+    var data = $('#create-news').serializeArray()
+    var content = tinymce.get('mytextarea').getContent();
+    var imagedata = new FormData($('#create-news')[0]);
+
+    console.log(content)
+    //add content in data
+    data.push({name:'content-data',value:content})
+    data.push({name:'image',value:imagedata})
+    $.ajax({
+           type: "POST",
+           url: url,
+           data: data, // serializes the form's elements.
+           contentType: false,
+           cache: false,
+           processData: false,
+           success: function(data)
+           {
+                $('#data-inserted').hide()
+                $('#data-inserted-msg').show().fadeOut(6000,()=>{$('#success').hide()})// show response
+           },
+           error:function(data)
+           {
+                $('#data-failed-msg').show().fadeOut(6000,()=>{$('#failed').hide()})// show response
+                console.log(data)
+           }
+          
+         });
+  
+    
+  });
+</script>
+{% endblock %}

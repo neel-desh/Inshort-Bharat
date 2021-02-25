@@ -385,14 +385,14 @@ $(document).ready(function() {
       theme: 'modern',
       mobile: {
         theme: 'mobile',
-        plugins: ['autosave', 'lists', 'autolink']
+        plugins: ['autosave', 'lists', 'autolink', 'imagetools' ]
       },
       plugins: [
       'advlist autolink lists link image charmap print preview anchor',
       'searchreplace visualblocks code fullscreen',
       'insertdatetime media table contextmenu paste code'
     ],
-      toolbar: 'bold underline italic | bullist numlist | alignleft aligncenter alignright alignjustify | link',
+      toolbar: 'bold italic underline strikethrough | bullist numlist | alignleft aligncenter alignright alignjustify | link image',
     });
 
     tinymce.init({

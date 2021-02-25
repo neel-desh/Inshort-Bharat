@@ -58,10 +58,18 @@
                 <div class="header-top-toggler-button"></div>
               </div>
               <div class="top-nav">
+                {% if session['name'] %}
                 <div class="dropdown header-top-account login-modals">
-                  <button title="Title" type="button" data-toggle="modal" data-target="#exampleModalLong">Login</button>
-                  <button title="Title" type="button" data-toggle="modal" data-target="#exampleModalLong2">Registration</button>
+                  <button title="{{session['name']}}" type="button" >Hey, {{session['name']}}</button>
+                  <button title="Logout" type="button" ><a href="/logout">logout</a>  </button>
+               
                 </div>
+                {% else %}
+                <div class="dropdown header-top-account login-modals">
+                  <button title="Login" type="button" data-toggle="modal" data-target="#exampleModalLong"><a href="/login">Login</a></button>
+                  <button title="Register" type="button" data-toggle="modal" data-target="#exampleModalLong2"><a href="/register">Registration</a>  </button>
+                </div>
+                {% endif %}
                 <select class="selectpicker select-language" data-width="fit">
                   <option data-content='<span class="flag-icon flag-icon-us"></span> English'>English</option>
                   <option  data-content='<span class="flag-icon flag-icon-in"></span> Hindi'>Hindi</option>
@@ -228,7 +236,7 @@
           <div class="col">
             <div class="dashboard-container">
               <div class="dashboard-content-wrapper">
-                <div class="dashboard-section user-statistic-block">
+                <!-- <div class="dashboard-section user-statistic-block">
                   <div class="user-statistic">
                     <i data-feather="command"></i>
                     <h3>06</h3>
@@ -244,7 +252,7 @@
                     <h3>32</h3>
                     <span>Call for interview</span>
                   </div>
-                </div>
+                </div> -->
                 {% block dashboardsection %}
   
                 {% endblock %}
@@ -455,5 +463,7 @@
   
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
       <script src="/static/js/map.js"></script>
+      {% block customscript %}
+      {% endblock %}
     </body>
   </html>

@@ -56,10 +56,18 @@
                 <div class="header-top-toggler-button"></div>
               </div>
               <div class="top-nav">
+                {% if session['name'] %}
                 <div class="dropdown header-top-account login-modals">
-                  <button title="Title" type="button" data-toggle="modal" data-target="#exampleModalLong">Login</button>
-                  <button title="Title" type="button" data-toggle="modal" data-target="#exampleModalLong2">Registration</button>
+                  <button title="{{session['name']}}" type="button" >Hey, {{session['name']}}</button>
+                  <button title="Logout" type="button" ><a href="/logout">logout</a>  </button>
+              
                 </div>
+                {% else %}
+                <div class="dropdown header-top-account login-modals">
+                  <button title="Login" type="button" data-toggle="modal" data-target="#exampleModalLong"><a href="/login">Login</a></button>
+                  <button title="Register" type="button" data-toggle="modal" data-target="#exampleModalLong2"><a href="/register">Registration</a>  </button>
+                </div>
+                {% endif %}
                 <select class="selectpicker select-language" data-width="fit">
                   <option data-content='<span class="flag-icon flag-icon-us"></span> English'>English</option>
                   <option  data-content='<span class="flag-icon flag-icon-in"></span> Hindi'>Hindi</option>
