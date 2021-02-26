@@ -11,5 +11,5 @@ flask_simple_geoip
 datetime
 openweather
 flask_mail
-ntlk
+nltk
 vaderSentiment
