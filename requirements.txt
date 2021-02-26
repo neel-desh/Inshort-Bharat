@@ -13,3 +13,4 @@ openweather
 flask_mail
 nltk
 vaderSentiment
+pyrebase
