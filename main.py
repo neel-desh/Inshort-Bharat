@@ -451,7 +451,7 @@ def at_rl():
 ##TODO: Remove from Read Later
 ##==========
 @app.route('/rm-rl',methods=['GET','POST'])
-def at_rl():
+def rm_rl():
     #TODO: Login Check Not added
     news_id = request.args.get('nid')
     query = "DELETE FROM readlater WHERE post_id = %d AND user_id = %d"
