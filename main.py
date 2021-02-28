@@ -63,8 +63,25 @@ try:
 except Exception as e:
     print(e)
 
+# Common Functions
+def slug_gen(title):
+    """Remove Bad charater and add - where space & trims it"""
+    
+    trim_url = title.rsplit('/', 1)[-1]
+    cleanString = re.sub('\W+','-', trim_url )
+    return cleanString.lower()
 
-
+def sentiment_scores(sentence):
+    sent_tag = ""
+    sid_obj = SentimentIntensityAnalyzer()
+    sentiment_dict = sid_obj.polarity_scores(sentence)
+    if(sentiment_dict['compound'] >= 0.05):
+        sent_tag = "Positive"
+    elif(sentiment_dict['compound'] <= - 0.05): 
+        sent_tag = "Negative"
+    else:
+        sent_tag = "Neutral" 
+    return sent_tag
 
 ##==========
 ##* Index
@@ -332,13 +349,6 @@ def forgotpassword():
     return render_template("authentication/forgotpassword.html")
 
 ##==========
-##TODO: ChangePassword
-##==========
-@app.route('/change-password')
-def changepassword():
-    return redirect(url_for('login'))
-
-##==========
 ##TODO: Logout
 ##==========
 @app.route('/logout')
@@ -359,6 +369,28 @@ def logout():
 ##==========
 @app.route('/account')
 def account():
+    #TODO: login Check
+
+    # List Favourites here
+    user_id = session["user_id"]
+    query = """SELECT favorites.id, title, slug, timestamp 
+               FROM favorites
+               LEFT JOIN news on favorites.post_id = news.id
+               WHERE favorites.user_id = %d
+            """
+    data = (int(user_id))
+    with database.cursor(buffered=True) as cursor:
+        cursor.execute(query,data)
+        db_data = cursor.fetchall()
+        favourites = []
+        for row in db_data:
+            fav = {}
+            fav["post_id"] = row[0]
+            fav["title"] = row[1]
+            fav["slug"] = row[2]
+            fav["timestamp"] = row[3]
+            favourites.append(fav)
+        
     return render_template("profile/account.html")
 ##==========
 ##TODO: Edit Account
@@ -387,6 +419,19 @@ def at_fav():
     #     cursor.execute(query,data)
     #     database.commit()   
     return jsonify({'msg':'Added To Fav'})
+##==========
+##TODO: Remove to Favourite
+##==========
+@app.route('/rm-fav',methods=['GET','POST'])
+def rm_fav():
+    #TODO: Login Check Not Added Yet
+    news_id = request.args.get('nid')
+    # query = "DELETE FROM favorites WHERE post_id = %d AND user_id = %d"
+    # data = (int(news_id),int(session['user_id']))
+    # with database.cursor() as cursor:
+    #     cursor.execute(query,data)
+    #     database.commit()   
+    return jsonify({'msg':'Added To Fav'})
 
 ##==========
 ##TODO: Add to Read Later
@@ -402,6 +447,19 @@ def at_rl():
         database.commit()   
     return flask.Response(status=200)
 
+##==========
+##TODO: Remove from Read Later
+##==========
+@app.route('/rm-rl',methods=['GET','POST'])
+def at_rl():
+    #TODO: Login Check Not added
+    news_id = request.args.get('nid')
+    query = "DELETE FROM readlater WHERE post_id = %d AND user_id = %d"
+    data = (int(news_id),int(session['user_id']))
+    with database.cursor() as cursor:
+        cursor.execute(query,data)
+        database.commit()   
+    return flask.Response(status=200)
 
 
 
@@ -409,6 +467,110 @@ def at_rl():
 ##?TODO: User Profile & Dashboard Pages END
 ##?================================================
 
+##TODO: Common Edit Profile Functions
+
+##==========
+##TODO: ChangePassword
+##==========
+@app.route('/change-password',methods=['POST', 'GET'])
+def changepassword():
+    #TODO: Login Check
+    if request.method == 'POST':
+        user_id = session["user_id"]
+        #check if current password is correct
+        password = request.form['password']
+        password = hashlib.md5(password.encode()).hexdigest()
+
+        new_pass = request.form['newpassword']
+        new_pass = hashlib.md5(new_pass.encode()).hexdigest()
+
+        query = 'SELECT id, password from users WHERE id=%d'
+        data = (int(user_id))
+        with database.cursor(buffered=True) as cursor:
+            cursor.execute(query,data)
+            db_data = cursor.fetchall()
+            for row in db_data:
+                if row[1] == password:
+                    #update with the new password
+                    update_query = "UPDATE users SET password = %s WHERE id = %d"
+                    update_data = (new_pass,int(user_id))
+                    with database.cursor(buffered=True) as cursor:
+                        cursor.execute(update_query,update_data)
+                        database.commit()
+                    #return logout and relogin after password change
+                    return redirect(url_for('logout'))
+    else:
+        return "None"
+
+##==========
+##TODO: Basic Info
+##==========
+@app.route('/update-basicinfo',methods=['POST', 'GET'])
+def basicInfo():
+    #TODO: Login Check
+    if request.method == 'POST':
+        user_id = session["user_id"]
+        
+        full_name = request.form['name']
+        query = 'UPDATE users SET name=%s WHERE id=%d'
+        data = (full_name,int(user_id))
+        with database.cursor(buffered=True) as cursor:
+            cursor.execute(query,data)
+            database.commit()
+            return "Success"
+    else:
+        return "None"
+
+##==========
+##TODO: Avatar User Image
+##==========
+@app.route('/addProfImg',methods=['POST', 'GET'])
+def addProfileImage():
+    #TODO: Login Check
+    if request.method == 'POST':
+        user_id = session["user_id"]
+        #TODO: check if image exist
+        image = request.form['image']
+        #TODO: add Image to Firebase and add link in mysql
+        query = 'UPDATE users SET image=%s WHERE id=%d'
+        download_url = ""
+        data = (download_url,int(user_id))
+        with database.cursor(buffered=True) as cursor:
+            cursor.execute(query,data)
+            database.commit()
+            return "Success"
+    else:
+        return "None"
+
+##==========
+##TODO: Delete Account
+##==========
+@app.route('/delete-account',methods=['POST', 'GET'])
+def delaccount():
+    #TODO: Login Check
+    if request.method == 'POST':
+        user_id = session["user_id"]
+        #check if current password is correct
+        password = request.form['password']
+        password = hashlib.md5(password.encode()).hexdigest()
+
+        query = 'SELECT id, password from users WHERE id=%d'
+        data = (int(user_id))
+        with database.cursor(buffered=True) as cursor:
+            cursor.execute(query,data)
+            db_data = cursor.fetchall()
+            for row in db_data:
+                if row[1] == password:
+                    #update with the new password
+                    update_query = "DELETE from users WHERE id = %d"
+                    update_data = (int(user_id))
+                    with database.cursor(buffered=True) as cursor:
+                        cursor.execute(update_query,update_data)
+                        database.commit()
+                    #return logout and relogin after password change
+                    return redirect(url_for('logout'))
+    else:
+        return "None"
 
 ##?================================================
 ##?TODO: Admin Profile & Dashboard Pages END
@@ -478,6 +640,109 @@ def admineditnews():
 ##?
 ##?TODO: Admin Profile & Dashboard Pages END
 ##?================================================
+
+
+##?=============================================
+##?TODO: Comments CRUD
+##?
+@app.route("/add-comment",methods=['POST'])
+def addComment():
+    #TODO: session login check not implemented
+    if request.method == 'POST':
+        news_id = request.form["news_id"]
+        comment = request.form["comment"]
+        sentiment = sentiment_scores(comment)
+        query = "INSERT INTO comments(post_id, user_id, comment, sentiment) VALUES (%d,%d,%s,%s)"
+        data = (int(news_id),int(session['user_id']),comment,sentiment)
+        with database.cursor() as cursor:
+            cursor.execute(query,data)
+            database.commit()
+            return "Success"
+
+@app.route("/edit-comment",methods=['POST'])
+def editComment():
+    #TODO: session login check not implemented
+    if request.method == 'POST':
+        comment_id = request.form["comment_id"]
+        #news_id = request.form["news_id"]
+        comment = request.form["comment"]
+        sentiment = sentiment_scores(comment)
+        query = "UPDATE comments SET comment=%s, sentiment=%s WHERE id=%d"
+        data = (comment,sentiment,int(comment_id))
+        with database.cursor() as cursor:
+            cursor.execute(query,data)
+            database.commit()
+            return "Success"
+@app.route("/delete-comment",methods=['POST'])
+def deleteComment():
+    #TODO: session login check not implemented
+    if request.method == 'POST':
+        comment_id = request.form["comment_id"]
+        query = "DELETE FROM comments WHERE id=%d"
+        data = (int(comment_id))
+        with database.cursor() as cursor:
+            cursor.execute(query,data)
+            database.commit()
+            return "Success"
+
+def listComments(news_id):
+    """
+    This function list all the comments using news id and performing the join operation.
+    """
+    query = """SELECT id,name, comment, sentiment, timestamp 
+               FROM comments 
+               LEFT JOIN users 
+               ON comments.user_id = users.id 
+               WHERE post_id = %d"""
+    data = (int(news_id))
+    with database.cursor(buffered=True) as cursor:
+        cursor.execute(query,data)
+        db_data = cursor.fetchall()
+        comments = []
+        for row in db_data:
+            single_comment = {}
+            single_comment["comment_id"] = row[0]
+            single_comment["name"] = row[1]
+            single_comment["comment"] = row[2]
+            single_comment["sentiment"] = row[3]
+            single_comment["timestamp"] = row[4]
+            comments.append(single_comment)
+            #print(row)
+        total_count = len(comments)
+    return (comments,total_count)
+
+
+#? Comments Reports
+@app.route('/report-comment',methods=['GET','POST'])
+def reportComment():
+    #TODO: session login check
+    if request.method == 'POST':
+        comment_id = request.form["comment_id"]
+        query = "UPDATE comments SET reports= ( reports + 1 ) WHERE id=%d"
+        data = (int(comment_id))
+        with database.cursor() as cursor:
+            cursor.execute(query,data)
+            database.commit()
+            return "Success"
+
+@app.route('/rm-report-comment',methods=['GET','POST'])
+def removeReport():
+    #TODO: session login check
+    if request.method == 'POST':
+        comment_id = request.form["comment_id"]
+        query = "UPDATE comments SET reports= ( reports - 1 ) WHERE id=%d"
+        data = (int(comment_id))
+        with database.cursor() as cursor:
+            cursor.execute(query,data)
+            database.commit()
+            return "Success"
+
+##?
+##?TODO: Comments CRUDE END
+##?=============================================
+
+
+
 
 @app.route('/jd')
 def jd():
@@ -555,24 +820,7 @@ def url_gen(url):
     cleanString = re.sub('\W+','-', trim_url )
     return cleanString.lower()
 
-def slug_gen(title):
-    """Remove Bad charater and add - where space & trims it"""
-    
-    trim_url = title.rsplit('/', 1)[-1]
-    cleanString = re.sub('\W+','-', trim_url )
-    return cleanString.lower()
 
-def sentiment_scores(sentence):
-    sent_tag = ""
-    sid_obj = SentimentIntensityAnalyzer()
-    sentiment_dict = sid_obj.polarity_scores(sentence)
-    if(sentiment_dict['compound'] >= 0.05):
-        sent_tag = "Positive"
-    elif(sentiment_dict['compound'] <= - 0.05): 
-        sent_tag = "Negative"
-    else:
-        sent_tag = "Neutral" 
-    return sent_tag
 
 def sendBulkEmail(news_id=1):
     query = "select email from newsletter"

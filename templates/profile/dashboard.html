@@ -342,12 +342,12 @@
                   <ul>
                     <li><i class="fas fa-home"></i><a href="/account">Dashboard</a></li>
                     <li><i class="fas fa-user"></i><a href="/edit-account">Edit Profile</a></li>
-                    <li><i class="fas fa-heart"></i><a href="/view-bookmarked">Bookmarked</a></li>
+                    <li><i class="fas fa-heart"></i><a href="/view-bookmarked">Read Later</a></li>
 
                   </ul>
                   
                   <ul class="delete">
-                    <li><i class="fas fa-power-off"></i><a href="#">Logout</a></li>
+                    <li><i class="fas fa-power-off"></i><a href="/logout">Logout</a></li>
                     <li><i class="fas fa-trash-alt"></i><a href="#" data-toggle="modal" data-target="#modal-delete">Delete Profile</a></li>
                   </ul>
                   <!-- Modal -->
@@ -357,6 +357,7 @@
                         <div class="modal-body">
                           <h4><i data-feather="trash-2"></i>Delete Account</h4>
                           <p>Are you sure! You want to delete your profile. This can't be undone!</p>
+                          <!-- Account Delete Form -->
                           <form action="#">
                             <div class="form-group">
                               <input type="password" class="form-control" placeholder="Enter password">
