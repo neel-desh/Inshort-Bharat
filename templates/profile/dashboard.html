@@ -59,7 +59,7 @@
                 {% if session['name'] %}
                 <div class="dropdown header-top-account login-modals">
                   <button title="{{session['name']}}" type="button" >Hey, {{session['name']}}</button>
-                  <button title="Logout" type="button" ><a href="/logout">logout</a>  </button>
+                  <button title="Logout" type="button" ><a href="/logout">Logout</a>  </button>
               
                 </div>
                 {% else %}
@@ -329,11 +329,12 @@
               <div class="dashboard-sidebar">
                 <div class="user-info">
                   <div class="thumb">
-                    <img src="/static/dashboard/images/user-1.jpg" class="img-fluid" alt="">
+                    <img src="#" class="img-fluid" alt="">
                   </div>
                   <div class="user-body">
-                    <h5>Neel Deshmukh</h5>
-                    <span>@neeldeshmukh</span>
+                    
+                    <h5>{{session['name']}}</h5>
+                    <span>{{session['email']}}</span>
                   </div>
                 </div>
 
@@ -437,7 +438,7 @@
                   <ul>
                     <li><a href="/login">Login</a></li>
                     <li><a href="/register">Create Account</a></li>
-                    <li><a href="/myaccount">My Dashboard</a></li>
+                    <li><a href="/account">My Dashboard</a></li>
                     <li><a href="/logout">Logout</a></li>
 
 

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="padding-top-90 padding-bottom-90 access-page-bg">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-4 col-md-6">
+            <div class="access-form">
+              <div class="form-header">
+                <h5><i data-feather="user"></i>Enter OTP</h5>
+              </div>
+              <form action="/verify-otp-fp" method="POST">
+                <div class="row">
+
+                      <div class="col-md-8">
+                        <div class="form-group">
+                          <input type="text" name="OTP" maxlength="4" class="form-control" placeholder="0123">
+                        </div>
+                      </div>
+    
+                      <!-- <div class="col-md-8 col-lg-2">
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="1">
+                        </div>
+                      </div>
+                      <div class="col-md-8 col-lg-2">
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="2">
+                        </div>
+                      </div>
+                      <div class="col-md-8 col-lg-2 ">
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="3">
+                        </div>
+                      </div> -->
+                      <div class="w-100"></div>
+                      <div class="col">
+                        <div class="form-group terms">
+                          <input class="custom-radio" type="checkbox" id="radio-4" name="termsandcondition">
+                          <label for="radio-4">
+                            <span class="dot"></span> You accepts our <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a>
+                          </label>
+                        </div>
+                        <input type="submit" class="button primary-bg btn-block" value="Verify">
+                      </div>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    {% endblock %}

@@ -1,4 +1,3 @@
-
 from flask import *
 import hashlib
 import os
@@ -60,6 +59,14 @@ try:
     password="",
     database="inshort_bharat"
     )
+    # database = mysql.connector.connect(
+    # host="mysql.stackcp.com",
+    # user="inshortbharat-313731ad7f",
+    # password="36811b7ybn",
+    # database="inshortbharat-313731ad7f",
+    # port=53505
+    # )
+    print("Connection Success")
 except Exception as e:
     print(e)
 
@@ -220,21 +227,72 @@ def webstories():
 ##==========
 @app.route('/news')
 def news():
-    return render_template("news/blog.html")
+    #TODO: LIST NEWS recent
+    news_list = []
+    query = 'SELECT id, title, content, published_date, published_by FROM news ORDER BY timestamp ASC LIMIT 50'
+    with database.cursor(buffered=True) as cursor:
+        cursor.execute(query)
+        db_data = cursor.fetchall()
+        for row in db_data:
+            #print(row[1],row[2])
+            news = {}
+            news['id'] = row[0]
+            news['title'] = row[1]
+            news['content'] = row[2]
+            news['date'] = row[3]
+            news['author'] = row[4]
+            news_list.append(news)
+    #PUSH OBJECT in FLASK and Perform pagination
+    return render_template("news/blog.html",news=news_list)
 
 ##==========
 ##TODO: news-grids
 ##==========
-@app.route('/news-grids')
-def newsgrids():
-    return render_template("news/blog-grid.html")
+# @app.route('/news-grids')
+# def newsgrids():
+#     return render_template("news/blog-grid.html")
 
 ##==========
 ##TODO: news detail page
 ##==========
-@app.route('/dp')
-def dp():
-    return render_template("news/blog-details.html")
+@app.route('/dp/<category>/<slug>')
+def dp(category,slug):
+    news = {}
+    query = 'SELECT id, title, content, published_date, published_by, image, tags, FROM news WHERE slug = %s AND category = %s'
+    data = (str(category),str(slug))
+    with database.cursor(buffered=True) as cursor:
+        cursor.execute(query,data)
+        db_data = cursor.fetchall()
+        for row in db_data:
+            #print(row[1],row[2])
+            news['id'] = row[0]
+            news['title'] = row[1]
+            news['content'] = row[2]
+            news['date'] = row[3]
+            news['author'] = row[4]
+            news['headerimg'] = row[5]
+            news['tags'] = row[6]
+    #Comment
+    comment_list = []
+    query = """SELECT comments.id, users.name, comment, sentiment, timestamp  
+               FROM comments
+               LEFT JOIN users
+               ON comments.user_id = users.id
+               WHERE post_id = %d"""
+    data = (int(1))
+    with database.cursor(buffered=True) as cursor:
+        cursor.execute(query,data)
+        db_data = cursor.fetchall()
+        for row in db_data:
+            #print(row[1],row[2])
+            comment = {}
+            comment['id'] = row[0]
+            comment['name'] = row[1]
+            comment['comment'] = row[2]
+            comment['sentiment'] = row[3]
+            comment['timestamp'] = row[4]
+            comment_list.append(comment)
+    return render_template("news/blog-details.html",news=news,comments=comment_list)
 
 ##?
 ##TODO: News Display Pages End
@@ -344,10 +402,46 @@ def verifyotp():
 ##==========
 ##TODO: Forgot Password
 ##==========
-@app.route('/forgot-password')
+@app.route('/forgot-password',methods=['GET','POST'])
 def forgotpassword():
+    if request.method == 'POST':
+        email = request.form["email"]
+        OTP = random.randint(1000,9999)
+        session["fp-otp"] = OTP
+        session['fpemail'] = email
+        msg = Message('OTP', sender = 'sem6@neeldeshmukh.com',
+                        recipients = [email])
+        msg.body = "ForgotPass OTP: " + str(OTP)
+        mail.send(msg)
+        return redirect(url_for('verifyotpfp'))
     return render_template("authentication/forgotpassword.html")
 
+@app.route('/verify-otp-fp',methods=['GET','POST'])
+def verifyotpfp():
+    if request.method == 'POST':
+        otp = request.form['OTP']
+        OTP = session["fp-otp"]
+        if int(otp) == int(OTP):
+            session.pop("fp-otp",None)
+            session["fp-otp-verified"] = True
+            return redirect(url_for("changefp"))
+    return render_template("authentication/forgot-verify.html")
+
+@app.route('/change-fp')
+def changefp():
+    if request.method == 'POST':
+        if session["fp-otp-verified"]:
+            new_pass = request.form['newpassword']
+            new_pass = hashlib.md5(new_pass.encode()).hexdigest()
+            update_query = "UPDATE users SET password = %s WHERE email = %s"
+            update_data = (new_pass,str(session["fpemail"]))
+            with database.cursor(buffered=True) as cursor:
+                cursor.execute(update_query,update_data)
+                database.commit()
+            return redirect(url_for('login'))        
+        else:
+            return render_template_string("Error Bad Person U")
+    return render_template("forgot-changepass.html")
 ##==========
 ##TODO: Logout
 ##==========
@@ -372,24 +466,24 @@ def account():
     #TODO: login Check
 
     # List Favourites here
-    user_id = session["user_id"]
-    query = """SELECT favorites.id, title, slug, timestamp 
-               FROM favorites
-               LEFT JOIN news on favorites.post_id = news.id
-               WHERE favorites.user_id = %d
-            """
-    data = (int(user_id))
-    with database.cursor(buffered=True) as cursor:
-        cursor.execute(query,data)
-        db_data = cursor.fetchall()
-        favourites = []
-        for row in db_data:
-            fav = {}
-            fav["post_id"] = row[0]
-            fav["title"] = row[1]
-            fav["slug"] = row[2]
-            fav["timestamp"] = row[3]
-            favourites.append(fav)
+    # user_id = session["user_id"]
+    # query = """SELECT favorites.id, title, slug, timestamp 
+    #            FROM favorites
+    #            LEFT JOIN news on favorites.post_id = news.id
+    #            WHERE favorites.user_id = %d
+    #         """
+    # data = (int(user_id))
+    # with database.cursor(buffered=True) as cursor:
+    #     cursor.execute(query,data)
+    #     db_data = cursor.fetchall()
+    #     favourites = []
+    #     for row in db_data:
+    #         fav = {}
+    #         fav["post_id"] = row[0]
+    #         fav["title"] = row[1]
+    #         fav["slug"] = row[2]
+    #         fav["timestamp"] = row[3]
+    #         favourites.append(fav)
         
     return render_template("profile/account.html")
 ##==========
@@ -397,6 +491,7 @@ def account():
 ##==========
 @app.route('/edit-account')
 def editaccount():
+
     return render_template("profile/dashboard-edit-profile.html")
 
 ##==========
@@ -404,6 +499,28 @@ def editaccount():
 ##==========
 @app.route('/view-bookmarked')
 def viewbookmarked():
+    #TODO: login Check
+
+    # List Read Later here
+    # user_id = session["user_id"]
+    # query = """SELECT readlater.id, title, slug, timestamp 
+    #            FROM favorites
+    #            LEFT JOIN news on readlater.post_id = news.id
+    #            WHERE readlater.user_id = %d
+    #         """
+    # data = (int(user_id))
+    # with database.cursor(buffered=True) as cursor:
+    #     cursor.execute(query,data)
+    #     db_data = cursor.fetchall()
+    #     readlaters = []
+    #     for row in db_data:
+    #         fav = {}
+    #         fav["post_id"] = row[0]
+    #         fav["title"] = row[1]
+    #         fav["slug"] = row[2]
+    #         fav["timestamp"] = row[3]
+    #         readlaters.append(fav)
+    #make sure u copy the template or jinja2 part from favourites to here!
     return render_template("profile/dashboard-bookmark.html")
 
 ##==========
@@ -585,6 +702,8 @@ def adminaccount():
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
         return redirect(url_for("index"))
+    #TODO: List Published news
+    
     return render_template("profile/admin/admin-account.html")
 
 ##==========
@@ -627,7 +746,7 @@ def admincreatenews():
     return render_template("profile/admin/admin-dashboard-post-news.html")
 
 ##==========
-##TODO: Edit Admin - News
+##TODO: Manage Admin - News
 ##==========
 @app.route('/edit-news')
 def admineditnews():
@@ -635,8 +754,20 @@ def admineditnews():
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
         return redirect(url_for("index"))
+    
     return render_template("profile/admin/admin-dashboard-manage-news.html")
 
+##==========
+##TODO: Edit Admin DATA - News
+##==========
+@app.route('/editnews/<id>')
+def admineditnewsdata(nid):
+    if 'account_type' not in session:
+        return redirect(url_for("index"))
+    if int(session["account_type"]) != 1:
+        return redirect(url_for("index"))
+    
+    return render_template("profile/admin/admin-dashboard-post-news.html")
 ##?
 ##?TODO: Admin Profile & Dashboard Pages END
 ##?================================================
