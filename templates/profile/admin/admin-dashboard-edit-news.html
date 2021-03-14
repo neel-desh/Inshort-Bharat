@@ -7,7 +7,7 @@
                     <div class="form-group row">
                       <label class="col-md-3 col-form-label">Title</label>
                       <div class="col-md-9">
-                        <input  type="text" name="news-title" class="form-control" placeholder="Your News title here">
+                        <input name="title"  type="text" class="form-control" placeholder="Your News title here">
                       </div>
                     </div>
                   
@@ -160,24 +160,29 @@
    $("#create-news").submit(function(e) {
       $('#data-inserted').show()
     e.preventDefault(); // avoid to execute the actual submit of the form.
+  
     var form = $(this);
     var url = form.attr('action');
-    var formData = new FormData(this)
-    var newsContent = tinymce.get("mytextarea").getContent();
-    formData.append("content-news", newsContent);
+    var data = $('#create-news').serializeArray()
+    var content = tinymce.get('mytextarea').getContent();
+    var imagedata = new FormData($('#create-news')[0]);
+
+    console.log(content)
+    //add content in data
+    data.push({name:'content-data',value:content})
+    data.push({name:'image',value:imagedata})
     $.ajax({
            type: "POST",
-           url: '/create-news',
-           data : formData,
-
+           url: url,
+           data: data, // serializes the form's elements.
+           contentType: false,
+           cache: false,
+           processData: false,
            success: function(data)
            {
                 $('#data-inserted').hide()
                 $('#data-inserted-msg').show().fadeOut(6000,()=>{$('#success').hide()})// show response
            },
-           cache: false,
-           contentType: false,
-           processData: false,
            error:function(data)
            {
                 $('#data-failed-msg').show().fadeOut(6000,()=>{$('#failed').hide()})// show response

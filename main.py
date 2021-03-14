@@ -35,9 +35,9 @@ ow = openweather.OpenWeather()
 
 app = Flask(__name__,template_folder='templates')
 app.secret_key = 'this is a very secure string'
-# UPLOAD_FOLDER = 'static/uploads'
-# ALLOWED_EXTENSIONS = set(['jpeg', 'jpg', 'png', 'gif'])
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = set(['jpeg', 'jpg', 'png', 'gif'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config.update(GEOIPIFY_API_KEY='at_v1LEHVAlNSSUFAb6T3ONOJcNdy2WU')
 newsapi = NewsApiClient(api_key="18cd6534eefc44db90cb02e7ef2cb9fc")
 simple_geoip = SimpleGeoIP(app)
@@ -703,7 +703,20 @@ def adminaccount():
     if int(session["account_type"]) != 1:
         return redirect(url_for("index"))
     #TODO: List Published news
-    
+    #SORT with date
+    query = "SELECT id, title, published_date FROM news WHERE published_by = '%d'"
+    data = (int(session['user_id']))
+    recent_published_news = []
+    news = {}
+    with database.cursor(buffered=True) as cursor:
+        cursor.execute(query,data)
+        db_data = cursor.fetchall()
+        for row in db_data:
+            news['id'] = row[0]
+            news['title'] = row[1]
+            news['published_date'] = row[2]
+            recent_published_news.append(news)
+            news.clear()
     return render_template("profile/admin/admin-account.html")
 
 ##==========
@@ -728,19 +741,25 @@ def admincreatenews():
         return redirect(url_for("index"))
     if request.method == 'POST':
         image_link = ""
-        title = request.form['title']
+        title = request.form['news-title']
         slug = slug_gen(title)
         #upload this to firebase storage and get url
         header_image = request.files['image']
-        header_image.save(os.path.join('/static/', header_image.filename))   
-        data = storage.child("1/").put(header_image)
-        image_link = storage.child("1/").get_url(data['downloadTokens'])
+        #header_image.save(os.path.join('/static/', header_image.filename))
+        # open("static/upload/" + secure_filename(header_image.filename),"w+" ).close()
+        # header_image.save('static/upload',secure_filename(header_image.filename))
+        if header_image:
+            filename = secure_filename(header_image.filename)
+            header_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # data = storage.child("1/").put(header_image)
+        # image_link = storage.child("1/").get_url(data['downloadTokens'])
         category = request.form['category']
-        content = request.form['content-data']
+        content = request.form['content-news']
         locality = request.form['locality']
         send_bulk = request.form['bulk-email']
         #publish_by = session['user_id'] 
-        print(title,slug,category,content,locality,send_bulk,image_link)
+        print(title,slug,category,content,locality,send_bulk)
+        #TODO: News Insert
         return "news created"
     
     return render_template("profile/admin/admin-dashboard-post-news.html")
@@ -754,7 +773,21 @@ def admineditnews():
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
         return redirect(url_for("index"))
-    
+    #TODO: Just list the news created by this user give options liked edit, delete and read
+    query = "SELECT id, title, published_date FROM news where published_by = %d"
+    data = (int(session["user_id"]))
+    createdby_news_list = []
+    news = {}
+    with database.cursor(buffered=True) as cursor:
+        cursor.execute(query,data)
+        db_data = cursor.fetchall()
+        for row in db_data:
+            news["id"] = row[0]
+            news["title"] = row[1]
+            news["date"] = row[2]
+            createdby_news_list.append(news)
+            news.clear()
+
     return render_template("profile/admin/admin-dashboard-manage-news.html")
 
 ##==========
@@ -766,8 +799,24 @@ def admineditnewsdata(nid):
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
         return redirect(url_for("index"))
-    
-    return render_template("profile/admin/admin-dashboard-post-news.html")
+    #TODO: fill the data with news 
+    query = "SELECT title, content, image, category, tags FROM news where id = %d"
+    data = (int(nid))
+    news = {}
+    with database.cursor(buffered=True) as cursor:
+        cursor.execute(query,data)
+        db_data = cursor.fetchall()
+        for row in db_data:
+            news["title"] = row[0]
+            news["content"] = row[1]
+            news["image"] = row[2]
+            news["category"] = row[3]
+            news["tags"] = row[4]
+    print("News on edit data:",news)
+    #TODO: Take data and UPDATE
+    if request.method == 'POST':
+        return "True"
+    return render_template("profile/admin/admin-dashboard-edit-news.html")
 ##?
 ##?TODO: Admin Profile & Dashboard Pages END
 ##?================================================
@@ -953,7 +1002,7 @@ def url_gen(url):
 
 
 
-def sendBulkEmail(news_id=1):
+def sendBulkEmail():
     query = "select email from newsletter"
     receivers = []
     with database.cursor(buffered=True) as cursor:
