@@ -8,43 +8,63 @@
           <div class="col">
             <div class="dashboard-container">
               <div class="dashboard-content-wrapper"> -->
-
-                <form action="#" class="dashboard-form">
+                
+                
+                <form id="1" action="/addProfImg" method="POST"  class="dashboard-form" enctype="multipart/form-data">
                   <div class="dashboard-section upload-profile-photo">
                     <div class="update-photo">
-                      <img class="image" src="dashboard/images/user-1.jpg" alt="">
+                      <img class="image" src="{{session['user_img']}}" alt="">
                     </div>
                     <div class="file-upload">            
-                      <input type="file" class="file-input">Change Avatar
+                      <input type="file" name="image" class="file-input">Change Avatar
+                    </div>
+                    
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-9">
+                      <input type="submit" class="button" value="Update Profile">
                     </div>
                   </div>
+                </form>
+               
+                <form id="2" method="POST" action="/update-basicinfo" class="dashboard-form">
                   <div class="dashboard-section basic-info-input">
                     <h4><i data-feather="user-check"></i>Basic Info</h4>
                     <div class="form-group row">
                       <label class="col-sm-3 col-form-label">Full Name</label>
                       <div class="col-sm-9">
-                        <input type="text" class="form-control" placeholder="Full Name">
+                        <input type="text" name="fname" class="form-control" placeholder="Full Name">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-sm-3 col-form-label">Email Address</label>
                       <div class="col-sm-9">
-                        <input type="text" class="form-control" placeholder="email@example.com" readonly>
+                        <input type="text" class="form-control" placeholder="{{session['email']}}" readonly>
                       </div>
                     </div>
                   </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-9">
+                      <input type="submit" class="button" value="Update Name">
+                    </div>
+                  </div>
+                </form>
+              
+                <form id="3" action="/change-password" method="POST" class="dashboard-form">
                   <div class="dashboard-section basic-info-input">
                     <h4><i data-feather="lock"></i>Change Password</h4>
                     <div class="form-group row">
                       <label class="col-sm-3 col-form-label">Current Password</label>
                       <div class="col-sm-9">
-                        <input type="password" class="form-control" placeholder="Current Password">
+                        <input type="password" name="password" class="form-control" placeholder="Current Password">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-sm-3 col-form-label">New Password</label>
                       <div class="col-sm-9">
-                        <input type="password" class="form-control" placeholder="New Password">
+                        <input type="password" name="newpassword" class="form-control" placeholder="New Password">
                       </div>
                     </div>
                     <div class="form-group row">
@@ -56,12 +76,40 @@
                     <div class="form-group row">
                       <label class="col-sm-3 col-form-label"></label>
                       <div class="col-sm-9">
-                        <button class="button">Save Change</button>
+                        <input type="submit" class="button" value="Save Changes">
                       </div>
                     </div>
                   </div>
                 </form>
+                
               </div>
              
 
+{% endblock %}
+
+{% block extrascript%}
+<script>
+// this is the id of the form
+$(".dashboard-form").submit(function(e) {
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+    var form = $(this);
+    var url = form.attr('action');
+    var formData = new FormData(this)
+    
+    $.ajax({
+           type: "POST",
+           url: url,
+           data: formData, // serializes the form's elements.
+           success: function(data)
+           {
+               console.log(data)
+           },           
+           cache: false,
+           contentType: false,
+           processData: false,
+         });    
+});
+</script>
 {% endblock %}
