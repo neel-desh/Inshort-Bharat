@@ -293,8 +293,8 @@
                   
                   </ul>
                   <ul class="delete">
-                    <li><i class="fas fa-power-off"></i><a href="#">Logout</a></li>
-                    <li><i class="fas fa-trash-alt"></i><a href="#" data-toggle="modal" data-target="#modal-delete">Delete Profile</a></li>
+                    <li><i class="fas fa-power-off"></i><a href="/logout">Logout</a></li>
+                    <li><i class="fas fa-trash-alt"></i><a href="" data-toggle="modal" data-target="#modal-delete">Delete Profile</a></li>
                   </ul>
                   <!-- Modal -->
                   <div class="modal fade modal-delete" id="modal-delete" tabindex="-1" role="dialog" aria-hidden="true">
@@ -303,13 +303,13 @@
                         <div class="modal-body">
                           <h4><i data-feather="trash-2"></i>Delete Account</h4>
                           <p>Are you sure! You want to delete your profile. This can't be undone!</p>
-                          <form action="#">
+                          <form action="/delete-account" method="POST">
                             <div class="form-group">
-                              <input type="password" class="form-control" placeholder="Enter password">
+                              <input type="password" name="password" class="form-control" placeholder="Enter password">
                             </div>
                             <div class="buttons">
-                              <button class="delete-button">Save Update</button>
-                              <button class="">Cancel</button>
+                              <input type="submit" class="delete-button" value="Save Update">
+                              
                             </div>
                             <div class="form-group form-check">
                               <input type="checkbox" class="form-check-input" checked="">

@@ -230,20 +230,23 @@ def webstories():
 def news():
     #TODO: LIST NEWS recent
     news_list = []
-    query = 'SELECT id, title, content, published_date, published_by FROM news ORDER BY timestamp ASC LIMIT 50'
+    news = {}
+    query = 'SELECT id, title, content, published_date, published_by, category, slug FROM news ORDER BY published_date ASC LIMIT 50'
     with database.cursor(buffered=True) as cursor:
         cursor.execute(query)
         db_data = cursor.fetchall()
+       
         for row in db_data:
             #print(row[1],row[2])
-            news = {}
             news['id'] = row[0]
             news['title'] = row[1]
             news['content'] = row[2]
             news['date'] = row[3]
             news['author'] = row[4]
+            news['category'] = row[5]
+            news['slug'] = row[6]
             news_list.append(news)
-    #PUSH OBJECT in FLASK and Perform pagination
+    print(news_list)
     return render_template("news/blog.html",news=news_list)
 
 ##==========
@@ -677,7 +680,7 @@ def sociallinks():
         twitter = request.form["twitter"]
         linkedin = request.form["linkedin"]
         google = request.form["google"]
-        query = "UPDATE social SET facebook=%s, instagram=%s, twitter=%s, linkedin=%s, google=%s WHERE user_id = '%d'"
+        query = "UPDATE social SET facebook=%s, instagram=%s, twitter=%s, linkedin=%s, google=%s WHERE user_id = %s"
         #Get more data from form here
         data = (facebook, instagram,twitter,linkedin,google,int(user_id))
         with database.cursor(buffered=True) as cursor:
@@ -715,7 +718,7 @@ def delaccount():
                     #return logout and relogin after password change
                     return redirect(url_for('logout'))
     else:
-        return "None"
+        return redirect(url_for('index'))
 
 ##?================================================
 ##?TODO: Admin Profile & Dashboard Pages END
@@ -732,20 +735,20 @@ def adminaccount():
         return redirect(url_for("index"))
     #TODO: List Published news
     #SORT with date
-    query = "SELECT id, title, published_date FROM news WHERE published_by = '%d'"
-    data = (int(session['user_id']))
+    query = "SELECT id, title, published_date FROM news WHERE published_by =" + str(session['user_id']) +""
     recent_published_news = []
     news = {}
     with database.cursor(buffered=True) as cursor:
-        cursor.execute(query,data)
-        db_data = cursor.fetchall()
-        for row in db_data:
+        cursor.execute(query)
+        data = cursor.fetchall()
+        for row in data:
             news['id'] = row[0]
             news['title'] = row[1]
             news['published_date'] = row[2]
+            print(row)
             recent_published_news.append(news)
-            news.clear()
-    return render_template("profile/admin/admin-account.html")
+            
+    return render_template("profile/admin/admin-account.html",newslist=recent_published_news)
 
 ##==========
 ##TODO: Admin Edit Account
@@ -756,7 +759,18 @@ def admineditaccount():
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
         return redirect(url_for("index"))
-    return render_template("profile/admin/admin-dashboard-edit-profile.html")
+    query = "SELECT * FROM social WHERE user_id = " + str(session["user_id"]) + ""
+    with database.cursor() as cursor:
+        cursor.execute(query)
+        myresult = cursor.fetchall()
+        social = {}
+        for row in myresult:
+            social['facebook'] = row[2]
+            social['instagram'] = row[3]
+            social['twitter'] = row[4]
+            social['linkedin'] = row[5]
+            social['google'] = row[6]
+    return render_template("profile/admin/admin-dashboard-edit-profile.html",social=social)
 
 ##==========
 ##TODO: Create Admin - News
@@ -778,14 +792,18 @@ def admincreatenews():
             storagePath = "uploads/" + str(session["user_id"]) + "/"+ filename
             image_link = uploadImageFirebase(header_image,storagePath)
             #header_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
         category = request.form['category']
+        tags = request.form['tags']
         content = request.form['content-news']
         locality = request.form['locality']
         send_bulk = request.form['bulk-email']
-        #publish_by = session['user_id'] 
         print(title,slug,category,content,locality,send_bulk,image_link)
         #TODO: News Insert
+        query = "INSERT INTO news(title, content, image, slug, category, tags, published_by, location) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        data = (title,content,image_link,slug,category,tags,session['user_id'],locality)
+        with database.cursor() as cursor:
+            cursor.execute(query,data)
+            database.commit()
         return "news created"
     
     return render_template("profile/admin/admin-dashboard-post-news.html")
@@ -819,18 +837,18 @@ def admineditnews():
 ##==========
 ##TODO: Edit Admin DATA - News
 ##==========
-@app.route('/editnews/<id>')
+@app.route('/editnews/<nid>',methods=['GET','POST'])
 def admineditnewsdata(nid):
     if 'account_type' not in session:
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
         return redirect(url_for("index"))
     #TODO: fill the data with news 
-    query = "SELECT title, content, image, category, tags FROM news where id = '%d'"
-    data = (int(nid))
+    query = "SELECT title, content, image, category, tags FROM news where id =" + str(nid) + " AND published_by = " + str(session['user_id']) + ""
     news = {}
+    news["id"] = nid
     with database.cursor(buffered=True) as cursor:
-        cursor.execute(query,data)
+        cursor.execute(query)
         db_data = cursor.fetchall()
         for row in db_data:
             news["title"] = row[0]
@@ -838,12 +856,37 @@ def admineditnewsdata(nid):
             news["image"] = row[2]
             news["category"] = row[3]
             news["tags"] = row[4]
-    print("News on edit data:",news)
-    #TODO: Take data and UPDATE
-    if request.method == 'POST':
-        return "True"
-    return render_template("profile/admin/admin-dashboard-edit-news.html")
+    return render_template("profile/admin/admin-dashboard-edit-news.html",news=news)
 
+@app.route('/editnewsdata',methods=['POST'])
+def newsdata():
+    if request.method == 'POST':
+        try:
+            id = request.form["id"]
+            title = request.form['title']
+            backupimage = request.form['backupimage']
+            image_link = ""
+            #upload this to firebase storage and get url
+            header_image = request.files['image']
+            if header_image:
+                filename = secure_filename(header_image.filename)
+                storagePath = "uploads/" + str(session["user_id"]) + "/"+ filename
+                image_link = uploadImageFirebase(header_image,storagePath)
+                #header_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            else:
+                image_link = backupimage
+            category = request.form['category']
+            tags = request.form['tags']
+            content = request.form['content-news']
+            print(title,category,content,image_link,tags,id)
+            query = "UPDATE news SET title = %s , content = %s , image = %s , category = %s, tags = %s WHERE id = " + str(id) + " AND published_by = " + str(session['user_id'])+ ""
+            data = (title,content,image_link,category,tags)
+            with database.cursor() as cursor:
+                cursor.execute(query,data)
+                database.commit()
+        except Exception as e:
+            print(e)
+    return "Success"
 ##==========
 ##TODO: Delete News
 ##==========
@@ -980,6 +1023,7 @@ def jd():
 def newsletter():
     if request.method == 'POST':
         email = request.form['email']
+        #TODO: Send Email
         print(email)
     return "Thanks!"
 

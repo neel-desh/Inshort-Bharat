@@ -24,7 +24,7 @@
                         <div class="form-group row">
                           <label class="col-sm-3 col-form-label">Full Name</label>
                           <div class="col-sm-9">
-                            <input type="text" name="fname" class="form-control" placeholder="Full Name">
+                            <input type="text" name="fname" class="form-control" value="{{session['name']}}">
                           </div>
                         </div>
                         <div class="form-group row">
@@ -108,7 +108,7 @@
                           <div class="input-group-prepend">
                             <div class="input-group-text"><i class="fab fa-facebook-f"></i></div>
                           </div>
-                          <input type="text" name="facebook" class="form-control" placeholder="facebook.com/username">
+                          <input type="text" name="facebook" class="form-control" value="{{social['facebook']}}">
                         </div>
                       </div>
                     </div>
@@ -118,7 +118,7 @@
                           <div class="input-group-prepend">
                             <div class="input-group-text"><i class="fab fa-twitter"></i></div>
                           </div>
-                          <input type="text" name="twitter" class="form-control" placeholder="twitter.com/username">
+                          <input type="text" name="twitter" class="form-control" value="{{social['twitter']}}">
                         </div>
                       </div>
                     </div>
@@ -128,7 +128,7 @@
                           <div class="input-group-prepend">
                             <div class="input-group-text"><i class="fab fa-google-plus"></i></div>
                           </div>
-                          <input type="text" name="google" class="form-control" placeholder="google.com/username">
+                          <input type="text" name="google" class="form-control" value="{{social['google']}}">
                         </div>
                       </div>
                     </div>
@@ -138,7 +138,7 @@
                           <div class="input-group-prepend">
                             <div class="input-group-text"><i class="fab fa-linkedin"></i></div>
                           </div>
-                          <input type="text" name="linkedin" class="form-control" placeholder="google.com/username">
+                          <input type="text" name="linkedin" class="form-control" value="{{social['linkedin']}}">
                         </div>
                       </div>
                     </div>
@@ -148,7 +148,7 @@
                           <div class="input-group-prepend">
                             <div class="input-group-text"><i class="fab fa-instagram"></i></div>
                           </div>
-                          <input type="text" name="instagram" class="form-control" placeholder="google.com/username">
+                          <input type="text" name="instagram" class="form-control" value="{{social['instagram']}}">
                         </div>
                       </div>
                     </div>

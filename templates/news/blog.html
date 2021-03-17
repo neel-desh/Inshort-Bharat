@@ -6,24 +6,23 @@
         <div class="row">
           <div class="col">
             <div class="blog-post-wrapper">
-             
-              {% for article in articles[category] %}
+            
+              {% for news in news_list %}
               <article class="blog-list">
                 <div class="info">
-                  <span class="date">{{article.publishedAt}}</span>
-                 
-                 
+                  <span class="date">{{news['date']}}</span>
                 </div>
                 <div class="content">
-                  <h3><a href="">{{article.title}}</a></h3>
-                  <p>{{article.description}}</p>
+                  <h3><a href="">{{news['title']}}</a></h3>
+                  <p>{{news['content']}}</p>
                 </div>
                 <div class="read-more">
-                  <a href="/article/{{category}}/{{article.title | url_gen}}" class="button">Read More</a>
+                  <a href="/dp/{{news['category']}}/{{news['slug']}}" class="button">Read More</a>
                 </div>
               </article>
               {% endfor %}
-              <div class="pagination-list text-center">
+
+              <!-- <div class="pagination-list text-center">
                 <nav class="navigation pagination">
                   <div class="nav-links">
                     <a class="prev page-numbers" href="#"><i class="fas fa-angle-left"></i></a>
@@ -34,7 +33,7 @@
                     <a class="next page-numbers" href="#"><i class="fas fa-angle-right"></i></a>
                   </div>
                 </nav>                
-              </div>
+              </div> -->
             </div>
           </div>
         </div>

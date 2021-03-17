@@ -24,16 +24,19 @@
                 <div class="dashboard-section dashboard-recent-activity">
                   <h4 class="title">Recently Published News</h4>
                   <!-- For loop here -->
+                  {% for news in newslist %}
                   <div class="activity-list">
                     <!-- <i class="fas fa-bolt"></i> -->
                     <div class="content">
-                      <h5>Your Resume Updated!</h5>
-                      <span class="time">5 hours ago</span>
+                      <h5>{{ news['title'] }}</h5>
+                      <span class="time">{{ news['published_date'] }}</span>
                     </div>
                     <div class="close-activity">
-                      <i class="fas fa-edit"></i>
+                      
+                      <a href="/editnews/{{news['id']}}"> <i class="fas fa-edit"></i> </a>
                     </div>
                   </div>
+                  {% endfor %}
                   <!-- For loop Ends here -->
                 </div>
             {% endblock %}
