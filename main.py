@@ -226,17 +226,16 @@ def webstories():
 ##==========
 ##TODO: news
 ##==========
-@app.route('/news')
+@app.route('/news',methods=['GET','POST'])
 def news():
     #TODO: LIST NEWS recent
     news_list = []
-    news = {}
     query = 'SELECT id, title, content, published_date, published_by, category, slug FROM news ORDER BY published_date ASC LIMIT 50'
-    with database.cursor(buffered=True) as cursor:
+    with database.cursor() as cursor:
         cursor.execute(query)
         db_data = cursor.fetchall()
-       
         for row in db_data:
+            news = {}
             #print(row[1],row[2])
             news['id'] = row[0]
             news['title'] = row[1]
@@ -247,7 +246,7 @@ def news():
             news['slug'] = row[6]
             news_list.append(news)
     print(news_list)
-    return render_template("news/blog.html",news=news_list)
+    return render_template("news/blog.html",news_list=news_list)
 
 ##==========
 ##TODO: news-grids
@@ -262,8 +261,31 @@ def news():
 @app.route('/dp/<category>/<slug>')
 def dp(category,slug):
     news = {}
-    query = 'SELECT id, title, content, published_date, published_by, image, tags, FROM news WHERE slug = %s AND category = %s'
-    data = (str(category),str(slug))
+    # Query fetches news and publisher details
+    query = """
+            SELECT
+                news.id,
+                title,
+                content,
+                published_date,
+                image,
+                tags,
+                users.name,
+                users.image_url,
+                facebook,
+                instagram,
+                linkedin,
+                twitter,
+                google
+            FROM
+                news
+            LEFT JOIN users ON news.published_by = users.id
+            LEFT JOIN social ON users.id = social.user_id
+            WHERE
+                slug = %s AND category = %s
+            """
+    print(query)
+    data = (slug, category)
     with database.cursor(buffered=True) as cursor:
         cursor.execute(query,data)
         db_data = cursor.fetchall()
@@ -273,29 +295,36 @@ def dp(category,slug):
             news['title'] = row[1]
             news['content'] = row[2]
             news['date'] = row[3]
-            news['author'] = row[4]
-            news['headerimg'] = row[5]
-            news['tags'] = row[6]
+            news['headerimg'] = row[4]
+            news['tags'] = row[5]
+            news['authorname'] = row[6]
+            news['authorimg'] = row[7]
+            news['facebook'] = row[8]
+            news['instagram'] = row[9]
+            news['linkedin'] = row[10]
+            news['twitter'] = row[11]
+            news['google'] = row[12]            
     #Comment
     comment_list = []
-    query = """SELECT comments.id, users.name, comment, sentiment, timestamp  
-               FROM comments
-               LEFT JOIN users
-               ON comments.user_id = users.id
-               WHERE post_id = '%d'"""
-    data = (int(1))
+    print(news)
+    nquery = "SELECT comments.id, users.name, comment, sentiment, timestamp, users.image_url, comments.user_id FROM comments LEFT JOIN users ON comments.user_id = users.id WHERE post_id = "+ str(news['id'])+""
+               
     with database.cursor(buffered=True) as cursor:
-        cursor.execute(query,data)
+        cursor.execute(nquery)
         db_data = cursor.fetchall()
         for row in db_data:
             #print(row[1],row[2])
+            print(row)
             comment = {}
             comment['id'] = row[0]
             comment['name'] = row[1]
             comment['comment'] = row[2]
             comment['sentiment'] = row[3]
             comment['timestamp'] = row[4]
+            comment['user_img'] = row[5]
+            comment['user_id'] = row[6]
             comment_list.append(comment)
+    print(comment_list)
     return render_template("news/blog-details.html",news=news,comments=comment_list)
 
 ##?
@@ -634,7 +663,7 @@ def basicInfo():
         user_id = session["user_id"]
         
         full_name = request.form['fname']
-        query = "UPDATE users SET name=%s WHERE id='%d'"
+        query = "UPDATE users SET name=%s WHERE id=%s"
         data = (full_name,int(user_id))
         with database.cursor(buffered=True) as cursor:
             cursor.execute(query,data)
@@ -702,16 +731,16 @@ def delaccount():
         password = request.form['password']
         password = hashlib.md5(password.encode()).hexdigest()
 
-        query = "SELECT id, password from users WHERE id = '%d'"
-        data = (int(user_id))
+        query = "SELECT id, password from users WHERE id = %s"
+        data = (user_id)
         with database.cursor(buffered=True) as cursor:
             cursor.execute(query,data)
             db_data = cursor.fetchall()
             for row in db_data:
                 if row[1] == password:
                     #update with the new password
-                    update_query = "DELETE from users WHERE id = '%d'"
-                    update_data = (int(user_id))
+                    update_query = "DELETE from users WHERE id = %s"
+                    update_data = (user_id)
                     with database.cursor(buffered=True) as cursor:
                         cursor.execute(update_query,update_data)
                         database.commit()
@@ -737,11 +766,12 @@ def adminaccount():
     #SORT with date
     query = "SELECT id, title, published_date FROM news WHERE published_by =" + str(session['user_id']) +""
     recent_published_news = []
-    news = {}
+    
     with database.cursor(buffered=True) as cursor:
         cursor.execute(query)
         data = cursor.fetchall()
         for row in data:
+            news = {}
             news['id'] = row[0]
             news['title'] = row[1]
             news['published_date'] = row[2]
@@ -818,19 +848,19 @@ def admineditnews():
     if int(session["account_type"]) != 1:
         return redirect(url_for("index"))
     #TODO: Just list the news created by this user give options liked edit, delete and read
-    query = "SELECT id, title, published_date FROM news where published_by = '%d'"
-    data = (int(session["user_id"]))
+    query = "SELECT id, title, published_date FROM news where published_by = %s"
+    data = (session["user_id"])
     createdby_news_list = []
-    news = {}
     with database.cursor(buffered=True) as cursor:
         cursor.execute(query,data)
         db_data = cursor.fetchall()
         for row in db_data:
+            news = {}
             news["id"] = row[0]
             news["title"] = row[1]
             news["date"] = row[2]
             createdby_news_list.append(news)
-            news.clear()
+            
 
     return render_template("profile/admin/admin-dashboard-manage-news.html")
 
@@ -895,8 +925,8 @@ def deletenews():
     #TODO: session login check not implemented
     if request.method == 'POST':
         news_id = request.args.get('nid')
-        query = "DELETE FROM news WHERE id=%d AND published_by = '%d'"
-        data = (int(news_id),int(session['user_id']))
+        query = "DELETE FROM news WHERE id=%s AND published_by = %s"
+        data = (news_id,session['user_id'])
         with database.cursor() as cursor:
             cursor.execute(query,data)
             database.commit()
@@ -917,8 +947,8 @@ def addComment():
         news_id = request.form["news_id"]
         comment = request.form["comment"]
         sentiment = sentiment_scores(comment)
-        query = "INSERT INTO comments(post_id, user_id, comment, sentiment) VALUES (%d,%d,%s,%s)"
-        data = (int(news_id),int(session['user_id']),comment,sentiment)
+        query = "INSERT INTO comments(post_id, user_id, comment, sentiment) VALUES (%s,%s,%s,%s)"
+        data = (news_id,session['user_id'],comment,sentiment)
         with database.cursor() as cursor:
             cursor.execute(query,data)
             database.commit()
@@ -932,7 +962,7 @@ def editComment():
         #news_id = request.form["news_id"]
         comment = request.form["comment"]
         sentiment = sentiment_scores(comment)
-        query = "UPDATE comments SET comment=%s, sentiment=%s WHERE id = '%d'"
+        query = "UPDATE comments SET comment=%s, sentiment=%s WHERE id = %s"
         data = (comment,sentiment,int(comment_id))
         with database.cursor() as cursor:
             cursor.execute(query,data)
@@ -943,7 +973,7 @@ def deleteComment():
     #TODO: session login check not implemented
     if request.method == 'POST':
         comment_id = request.form["comment_id"]
-        query = "DELETE FROM comments WHERE id='%d'"
+        query = "DELETE FROM comments WHERE id=%s"
         data = (int(comment_id))
         with database.cursor() as cursor:
             cursor.execute(query,data)
@@ -958,7 +988,7 @@ def listComments(news_id):
                FROM comments 
                LEFT JOIN users 
                ON comments.user_id = users.id 
-               WHERE post_id = '%d'"""
+               WHERE post_id = %s"""
     data = (int(news_id))
     with database.cursor(buffered=True) as cursor:
         cursor.execute(query,data)
@@ -983,7 +1013,7 @@ def reportComment():
     #TODO: session login check
     if request.method == 'POST':
         comment_id = request.form["comment_id"]
-        query = "UPDATE comments SET reports= ( reports + 1 ) WHERE id='%d'"
+        query = "UPDATE comments SET reports= ( reports + 1 ) WHERE id=%s"
         data = (int(comment_id))
         with database.cursor() as cursor:
             cursor.execute(query,data)
@@ -995,8 +1025,8 @@ def removeReport():
     #TODO: session login check
     if request.method == 'POST':
         comment_id = request.form["comment_id"]
-        query = "UPDATE comments SET reports= ( reports - 1 ) WHERE id='%d'"
-        data = (int(comment_id))
+        query = "UPDATE comments SET reports= ( reports - 1 ) WHERE id=%s"
+        data = (comment_id)
         with database.cursor() as cursor:
             cursor.execute(query,data)
             database.commit()
@@ -1069,7 +1099,7 @@ def privacypolicy():
 ##
 @app.route("/terms-and-condition")
 def termsncondition():
-    #sendBulkEmail()
+    
     return render_template("terms-and-condition.html")
 ##?
 ##? Misc Pages END

@@ -3,7 +3,7 @@
 
 
 
-    <div class="alice-bg padding-top-60 section-padding-bottom">
+    <div class="alice-bg  section-padding-bottom">
       <div class="container">
 
         <div class="row">
@@ -13,28 +13,18 @@
             <div class="blog-post-details-container">
               <div class="blog-details-wrapper">
                 <div class="info">
-                  <span class="date">24th dec, 2020</span>
-                  <span class="author"><a href="#"><i data-feather="user"></i>Robert Karlos</a></span>
-                  <span class="comments"><i data-feather="message-circle"></i>42</span>
+                  <span class="date">{{news['date']}}</span>
+                  <span class="author"><a href="#"><i data-feather="user"></i>{{news['authorname']}}</a></span>
+                  <span class="comments"><i data-feather="message-circle"></i>{{comments|length}}</span>
 
 
                 </div>
                 <div class="post-content">
-                  <h2>There are many variations  of passages</h2>
-                  <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.  but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release  circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us.</p>
-                  <p>Ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences.</p>
-                  <img src="/static/images/blog/post-thumb-1.jpg" class="img-fluid" alt="">
-                  <blockquote>“It was popularised in the 1960s with the release  circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us Nam libero tempore, cum soluta nobis est eligendi.”</blockquote>
-                  <p>Expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure.</p>
+                  <h2>{{news['title']}}</h2>
+                 
+                  <img src="{{news['headerimg']}}" class="img-fluid" alt="">
                   <p>To take a trivial example, which of us ever undertakes laborious  physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a there anyone who loves or pain that produces no resultant pleasure.</p>
-                  <div class="images">
-                    <div class="image">
-                      <img src="/static/images/blog/post-thumb-2.jpg" class="img-fluid" alt="">
-                    </div>
-                    <div class="image">
-                      <img src="/static/images/blog/post-thumb-3.jpg" class="img-fluid" alt="">
-                    </div>
-                  </div>
+
                   <p>Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious  some great physical exercise, except to.</p>
                   <div class="job-title-and-info" style="padding: 30px;">
                     <div class="buttons">
@@ -53,146 +43,128 @@
               <div class="post-meta">
                 <div class="post-author">
                   <div class="avatar">
-                    <img src="/static/images/blog/author.jpg" class="img-fluid" alt="">
+                    <img src="{{news['authorimg']}}" class="img-fluid" alt="">
                   </div>
                   <div class="name">
-                    <p>Post By</p>
-                    <h5><a href="#">Rovert Carlos</a></h5>
+                    <p>News By</p>
+                    <h5><a href="#">{{news['authorname']}}</a></h5>
                   </div>
                 </div>
+
                 <div class="post-tag">
-                  <h6>Post Tag</h6>
+                  {% set tags = news['tags'].split(',') %}
+                  <h6>News Tag </h6>
                   <div class="tags">
-                    <a href="#">Design</a>
-                    <a href="#">Creative</a>
-                    <a href="#">Photoshop</a>
-                    <a href="#">Tech</a>
+                  {% for tag in tags %}
+                  <a href="#">{{tag}}</a>
+                  {% endfor %}
                   </div>
                 </div>
+
                 <div class="post-share">
-                  <h6>Post Share</h6>
+                  <h6>Follow Editor</h6>
                   <div class="social-buttons">
-                    <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="google"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="linkedin"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="pinterest"><i class="fab fa-pinterest-p"></i></a>
-                    <a href="#" class="instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="{{news['facebook']}}" class="facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="{{news['twitter']}}" class="twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="{{news['google']}}" class="google"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="{{news['linkedin']}}" class="linkedin"><i class="fab fa-linkedin-in"></i></a>                  
+                    <a href="{{news['instagram']}}" class="instagram"><i class="fab fa-instagram"></i></a>
                   </div>
                 </div>
               </div>
 
               <div class="post-comment-block">
                 <!-- Write Comment Area -->
+                {% if session['user_id'] %}
+
                 <div class="comment-respond">
                   <h4>Write A Comment</h4>
 
-                  <form action="#">
+                  <form id="Addcomment" action="/add-comment" method="POST">
                     <div class="row">
-                      <div class="col-md-6">
+                      <div class="col-md-12">
                         <div class="form-group">
-                          <input type="text" placeholder="Name" class="form-control">
+                          <input type="text" value="{{session['name']}}" class="form-control" readonly maxlength="255">
                         </div>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-md-12">
                         <div class="form-group">
-                          <textarea placeholder="Comment" class="form-control"></textarea>
+                          <input type="hidden" name="news_id" value="{{news['id']}}">
+                          <textarea name="comment" placeholder="Comment" class="form-control"></textarea>
                         </div>
                          </div>
                     </div>
-                    <button class="button primary-bg">Submit</button>
+                    <input type="submit" class="button primary-bg" value="Submit">
                   </form>
 
                 </div>
+                  {%else%}
+                  <div class="comment-respond">
+                    <h4>Login to Comment</h4>
+  
+                    <form id="Addcomment" action="/login" method="POST">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group">
+                            <input type="email" name="email" placeholder="Email Address" class="form-control">
+                          </div>
+
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group">
+                            <div class="form-group">
+                              <input type="password" name="password" placeholder="Password" class="form-control">
+                            </div>
+                          </div>
+                           </div>
+                      </div>
+                      <input type="submit" class="button primary-bg" value="Login">
+                    </form>
+  
+                  </div>
+                {% endif %}
                 <!-- List comments Area -->
                 <div class="comment-area">
 
-                  <h4>5 Comments</h4>
+                  <h4>{{comments|length}} Comments</h4>
                   <ul class="comments">
+                    {% for comment in comments %}
                     <li class="comment">
                       <div class="comment-wrap">
                         <div class="comment-info">
                           <div class="commenter-thumb">
-                            <img src="/static/images/blog/2.jpg" class="img-fluid" alt="">
+                            <img src="{{comment['user_img']}}" class="img-fluid" alt="">
                           </div>
                           <div class="commenter-info">
-                            <span class="commenter-name">Lisa Parsons</span>
-                            <span class="date">28 Dec 2020</span>
+                            <span class="commenter-name">{{comment['name']}}</span>
+                            <span class="date">{{comment['timestamp']}}</span>
                           </div>
+<!-- Sentiment -->
                           <div class="reply">
-                            <button type="button" class="reply-button" data-toggle="modal" data-target="#modal-skill25">Reply</button>
-                            <div class="modal fade" id="modal-skill25" tabindex="-1" role="dialog" aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-body">
-                                    <div class="comment-respond">
-                                      <h4>Write A Comment</h4>
-                                      <form action="#">
-                                        <div class="row">
-                                          <div class="col-md-6">
-                                            <div class="form-group">
-                                              <input type="text" placeholder="Name" class="form-control">
-                                            </div>
-                                          </div>
-                                          <div class="col-md-6">
-                                            <div class="form-group">
-                                              <input type="email" placeholder="Email address" class="form-control">
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            <div class="form-group">
-                                              <textarea placeholder="Comment" class="form-control"></textarea>
-                                            </div>
-                                            <div class="form-group">
-                                              <input class="custom-radio" type="checkbox" id="radio-6" name="termsandcondition2">
-                                              <label for="radio-6">
-                                                <span class="dot"></span> Notify me of follow-up comments by email.
-                                              </label>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <button class="button primary-bg">Submit</button>
-                                      </form>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+                            {% if comment['sentiment'] == 'Positive' %}
+                            <button type="button" class="btn btn-success" >{{comment['sentiment']}}</button>
+                            {% else %}
+                            <button type="button" class="btn btn-danger" >{{comment['sentiment']}}</button>
+                            {% endif %}
+                            <!-- Show only whos comment it -->
+                            
+                            {% if comment['user_id'] == session['user_id'] %}
+                            <button type="button" id="" class="reply-button" >Delete</button>
+                            {% endif %}
                           </div>
+
                         </div>
                         <div class="comment-body">
-                          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+<p>{{comment['comment']}}</p>
                         </div>
                       </div>
-                      <ul class="comments child-comment">
-                        <li class="comment">
-                          <div class="comment-wrap">
-                            <div class="comment-info">
-                              <!-- <div class="commenter-thumb">
-                                <img src="/static/images/blog/3.jpg" class="img-fluid" alt="">
-                              </div> -->
-                              <div class="commenter-info">
-                                <span class="commenter-name">Ethel N. Myers</span>
-                                <span class="date">28 Dec 2020</span>
-                              </div>
-                              <div class="reply">
-                                <!-- <button type="button" class="reply-button" data-toggle="modal" data-target="#modal-skill26">Reply</button>
-  -->
-  
-                              </div>
-                            </div>
-                            <div class="comment-body">
-                              <p>em ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </li>
 
+                    </li>
+{% endfor %}
                   </ul>
                   <!-- <div class="view-all">
                     <a href="#">View all comments</a>
@@ -206,4 +178,30 @@
         </div>
       </div>
     </div>
+{% endblock %}
+{% block extrascript %}
+<script>
+
+
+// this is the id of the form
+$("#Addcomment").submit(function(e) {
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+    var form = $(this);
+    var url = form.attr('action');
+    
+    $.ajax({
+           type: "POST",
+           url: url,
+           data: form.serialize(), // serializes the form's elements.
+           success: function(data)
+           {
+               alert(data); // show response from the php script.
+           }
+         }); 
+});
+
+
+</script>
 {% endblock %}

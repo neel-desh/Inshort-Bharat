@@ -5,6 +5,7 @@
       <div class="container">
         <div class="row">
           <div class="col">
+            
             <div class="blog-post-wrapper">
             
               {% for news in news_list %}
@@ -14,7 +15,7 @@
                 </div>
                 <div class="content">
                   <h3><a href="">{{news['title']}}</a></h3>
-                  <p>{{news['content']}}</p>
+                  <p>{{news['content'] | safe }}</p>
                 </div>
                 <div class="read-more">
                   <a href="/dp/{{news['category']}}/{{news['slug']}}" class="button">Read More</a>
