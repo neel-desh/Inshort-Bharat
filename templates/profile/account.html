@@ -4,19 +4,53 @@
    <div class="dashboard-section dashboard-recent-activity">
 
         <h4 class="title">Favourites</h4>
+        {% if favs|length > 0 %}
+        {% for fav in favs%}
         <div class="activity-list">
-        <i class="fas fa-bolt"></i>
+        
         <div class="content">
-            <h5>The Best News APp!</h5>
-            <span class="time">5 hours ago</span>
+            <a href="/dp/{{fav['category']}}/{{fav['slug']}}"><h5>{{fav['title']}}</h5></a>
+        <br>
+            <span class="time">{{fav['timestamp']}}</span>
         </div>
         <div class="close-activity">
-            <i class="fas fa-times"></i>
+            <a href="/rm-fav/{{fav['id']}}" class="save"><i class="fas fa-times"></i> </a>
         </div>
         </div>
+        {% endfor %}
+        {% else %}
+        <div class="activity-list">
+        
+            <div class="content">
+                <h5>You dont have any Favourites articles!!! Add some</h5>
+          
+            </div>
+
+            </div>
+        {% endif %}
+
+
 
 
     </div>
 </div>
+{% endblock %}
+{% block extrascript%}
+<script>
+    $('a.save').click(function(e){
+        e.preventDefault();
+      
+        $.ajax({ 
+        url: $(this).attr('href'),
+        success: function(e){
+          console.log(e)
+        },
+        error: function(e){
+          console.log(e)
+        }
+        });
+        return false;
+        });
+</script>
 {% endblock %}
 

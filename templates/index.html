@@ -43,57 +43,49 @@
     </div>
     <div class="row">
       <div class="col">
+        {% for news in newslist %}
         <article class="blog-list">
           <div class="info">
             <!-- <span class="date">21th Nov,  2020</span>
                 <span class="author"><a href="#"><i data-feather="user"></i>Robert Karlos</a></span>
                 <span class="comments"><i data-feather="message-circle"></i>42</span> -->
 
-            <a href="#">
+           
               <img
-                src="/static/images/register-box/1.png"
+                src="{{news['image']}}"
                 class="img-fluid"
                 alt=""
               />
-            </a>
+            
           </div>
-          <div class="content">
+          <div class="content" style="padding-left: 10px;">
             <h3>
-              <a href="blog-details.html">How to pursue pleasure rationally</a>
+              <a href="">{{news['title']}}</a>
             </h3>
-            <p>
-              It is a long established fact that a reader will be distracted by
-              the readable content of a page when looking at its layout. but
-              also the leap into electronic typesetting, remaining essentially
-              unchanged. It was popularised in the 1960s with the release...
-              It is a long established fact that a reader will be distracted by
-              the readable content of a page when looking at its layout. but
-              also the leap into electronic typesetting, remaining essentially
-              unchanged. It was popularised in the 1960s with the release...
-              It is a long established fact that a reader will be distracted by
-              the readable content of a page when looking at its layout. but
-              also the leap into electronic typesetting, remaining essentially
-              unchanged. It was popularised in the 1960s with the release...  
-            </p>
+          {{news['content'] | safe  }}
           </div>
           <div class="read-more">
           
-              <!-- Here comes the news id from for looop -->
-            <button href="/at-fav?nid=1" class="favourite"><i data-feather="heart"></i></button>
+              
+            <a href="/at-rl/{{news['id']}}" class="button rl">Read later</a>
             
-            <a href="#" class="button">Read More</a>
+      
+            <a href="/dp/{{news['category']}}/{{news['slug']}}" class="button">Read More</a>
+
             <span id="success" style="display: none;" class="alert alert-success">
               <strong>Success!</strong>.
             </span>
             <span id="failed" style="display: none;"  class="alert alert-danger">
               <strong>Some Error!</strong>.
             </span>
+
             <br />
             <p style="padding-top: 5px" class="deadline">
-              Published: Oct 31, 2020
+              {{news['date']}}
             </p>
           </div>
         </article>
+        {% endfor %}
       </div>
     </div>
   </div>
@@ -158,7 +150,7 @@
 {% block extrascript %}
 <script>
 //This Scripts adds data to the fav and readlater
-  $(".favourite").click(function(e) {
+  $(".button, .rl").click(function(e) {
     e.preventDefault(); // avoid to execute the actual submit of the form.   
     $.ajax({
            type: "POST",

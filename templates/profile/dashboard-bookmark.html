@@ -1,34 +1,62 @@
 {% extends "profile/dashboard.html" %}
               {% block dashboardsection %}
 
-
-             
-                  
                   <div class="bookmark-area">
- 
+                  {% if readlater|length > 0 %}
+                  {% for rl in readlaters%}
                     <div class="job-list">
                       <div class="thumb">
                         <a href="#">
-                          <img src="/static/images/job/company-logo-2.png" class="img-fluid" alt="">
+                          <img src="{{rl['image']}}" class="img-fluid" alt="">
                         </a>
                       </div>
                       <div class="body">
                         <div class="content">
-                          <h4><a href="#">This is a news</a></h4>
+                          <h5><a href="/dp/{{rl['category']}}/{{rl['slug']}}">{{rl['title']}}</a></h5>
                           <div class="info">
-                           <p class="deadline">Added: Oct 31,  2020</p>
+                           <p class="deadline">Added: {{rl['timestamp']}}</p>
                           </div>
                         </div>
                         <div class="more">
 
-                          <a href="#" class="bookmark-remove"><i class="fas fa-times"></i></a>
+                          <a href="/rm-rl/{{rl['id']}}" class="bookmark-remove"><i class="fas fa-times"></i></a>
                         </div>
                       </div>
                     </div>
-
+                    {% endfor %}
+                    {% else %}
+                    <div class="job-list">
+                      <div class="body">
+                        <div class="content">
+                          <h5>Add some news that you will like to read later.....</h5>
+                       
+                        </div>
+    
+                      </div>
+                    </div>
+                    {% endif %}
+                    
 
 
                     </div>
                   </div>
             
+              {% endblock %}
+              {% block extrascript%}
+              <script>
+                $('a.bookmark-remove').click(function(e){
+                  e.preventDefault();
+                
+                  $.ajax({ 
+                  url: $(this).attr('href'),
+                  success: function(e){
+                    console.log(e)
+                  },
+                  error: function(e){
+                    console.log(e)
+                  }
+                  });
+                  return false;
+                  });
+              </script>
               {% endblock %}

@@ -54,19 +54,19 @@ app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 # Mysql connection
 try:
-    database = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="",
-    database="inshort_bharat"
-    )
     # database = mysql.connector.connect(
-    # host="mysql.stackcp.com",
-    # user="inshortbharat-313731ad7f",
-    # password="36811b7ybn",
-    # database="inshortbharat-313731ad7f",
-    # port=53505
+    # host="localhost",
+    # user="root",
+    # password="",
+    # database="inshort_bharat"
     # )
+    database = mysql.connector.connect(
+    host="mysql.stackcp.com",
+    user="inshortbharat-313731ad7f",
+    password="36811b7ybn",
+    database="inshortbharat-313731ad7f",
+    port=53505
+    )
     print("Connection Success")
 except Exception as e:
     print(e)
@@ -107,11 +107,28 @@ def index():
     news_articles = all_headlines.get('articles')
     for news in news_articles:
         headline += news['title'] + " "
+    news_list = []
+    query = 'SELECT id, title, content, published_date, image, category, slug FROM news ORDER BY published_date ASC LIMIT 10'
+    with database.cursor() as cursor:
+        cursor.execute(query)
+        db_data = cursor.fetchall()
+        for row in db_data:
+            news = {}
+            #print(row[1],row[2])
+            news['id'] = row[0]
+            news['title'] = row[1]
+            news['content'] = row[2]
+            news['date'] = row[3]
+            news['image'] = row[4]
+            news['category'] = row[5]
+            news['slug'] = row[6]
+            news_list.append(news)
     return render_template("index.html",
                             headlines=headline,
                             location=location,
                             weather_data=weather_data,
-                            day=datetime.datetime.today().strftime('%d'),month=datetime.datetime.today().strftime('%h'))
+                            day=datetime.datetime.today().strftime('%d'),month=datetime.datetime.today().strftime('%h'),
+                            newslist=news_list)
 
 #date article reference : https://stackoverflow.com/questions/28189442/datetime-current-year-and-month-in-python
 
@@ -501,25 +518,22 @@ def account():
 
     # List Favourites here
     user_id = session["user_id"]
-    query = """SELECT favorites.id, title, slug, timestamp 
-               FROM favorites
-               LEFT JOIN news on favorites.post_id = news.id
-               WHERE favorites.user_id = '%d'
-            """
-    data = (int(user_id))
+    query = "SELECT favorites.id, title, slug, news.category, timestamp FROM favorites LEFT JOIN news on favorites.post_id = news.id WHERE favorites.user_id = "+str(user_id)+""
+
     with database.cursor(buffered=True) as cursor:
-        cursor.execute(query,data)
+        cursor.execute(query)
         db_data = cursor.fetchall()
         favourites = []
         for row in db_data:
             fav = {}
-            fav["post_id"] = row[0]
+            fav["id"] = row[0]
             fav["title"] = row[1]
             fav["slug"] = row[2]
-            fav["timestamp"] = row[3]
+            fav["category"] = row[3]
+            fav["timestamp"] = row[4]
             favourites.append(fav)
         
-    return render_template("profile/account.html")
+    return render_template("profile/account.html",favs = favourites)
 ##==========
 ##TODO: Edit Account
 ##==========
@@ -537,35 +551,33 @@ def viewbookmarked():
 
     # List Read Later here
     user_id = session["user_id"]
-    query = """SELECT readlater.id, title, slug, timestamp 
-               FROM readlater
-               LEFT JOIN news on readlater.post_id = news.id
-               WHERE readlater.user_id = '%d'
-            """
-    data = (int(user_id))
+    query = "SELECT readlater.id, title, slug, news.category, timestamp, news.image FROM readlater LEFT JOIN news on readlater.post_id = news.id WHERE readlater.user_id = "+str(user_id)+""
     with database.cursor(buffered=True) as cursor:
-        cursor.execute(query,data)
+        cursor.execute(query)
         db_data = cursor.fetchall()
         readlaters = []
         for row in db_data:
             fav = {}
-            fav["post_id"] = row[0]
+            fav["id"] = row[0]
             fav["title"] = row[1]
             fav["slug"] = row[2]
-            fav["timestamp"] = row[3]
+            fav["category"] = row[3]
+            fav["timestamp"] = row[4]
+            fav["image"] = row[5]
             readlaters.append(fav)
     #make sure u copy the template or jinja2 part from favourites to here!
-    return render_template("profile/dashboard-bookmark.html")
+    return render_template("profile/dashboard-bookmark.html",readlaters = readlaters)
 
 ##==========
 ##TODO: Add to Favourite
 ##==========
-@app.route('/at-fav',methods=['GET','POST'])
-def at_fav():
+@app.route('/at-fav/<id>',methods=['GET','POST'])
+def at_fav(id):
     #TODO: Login Check Not Added Yet
-    news_id = request.args.get('nid')
-    query = "INSERT INTO favorites(post_id, user_id) VALUES (%d,%d)"
-    data = (int(news_id),int(session['user_id']))
+    news_id = id
+    query = "INSERT INTO favorites(post_id, user_id) VALUES (%s,%s)"
+    print(news_id,session['user_id'] )
+    data = (news_id,session['user_id'])
     with database.cursor() as cursor:
         cursor.execute(query,data)
         database.commit()   
@@ -573,44 +585,45 @@ def at_fav():
 ##==========
 ##TODO: Remove to Favourite
 ##==========
-@app.route('/rm-fav',methods=['GET','POST'])
-def rm_fav():
+@app.route('/rm-fav/<id>',methods=['GET','POST'])
+def rm_fav(id):
     #TODO: Login Check Not Added Yet
-    news_id = request.args.get('nid')
-    query = "DELETE FROM favorites WHERE post_id = '%d' AND user_id = '%d'"
-    data = (int(news_id),int(session['user_id']))
+    news_id = id
+    print(news_id, session["user_id"])
+    query = "DELETE FROM favorites WHERE id = "+ str(news_id) +" AND user_id ="+ str(session["user_id"]) +""
     with database.cursor() as cursor:
-        cursor.execute(query,data)
+        cursor.execute(query)
         database.commit()   
-    return jsonify({'msg':'Added To Fav'})
+    return jsonify({'msg':'Remove To Fav'})
 
 ##==========
 ##TODO: Add to Read Later
 ##==========
-@app.route('/at-rl',methods=['GET','POST'])
-def at_rl():
+@app.route('/at-rl/<id>',methods=['GET','POST'])
+def at_rl(id):
     #TODO: Login Check Not added
-    news_id = request.args.get('nid')
-    query = "INSERT INTO readlater(post_id, user_id) VALUES (%d,%d)"
-    data = (int(news_id),int(session['user_id']))
+    news_id = id
+    query = "INSERT INTO readlater(post_id, user_id) VALUES (%s,%s)"
+    print(news_id,session['user_id'] )
+    data = (news_id,session['user_id'])
     with database.cursor() as cursor:
         cursor.execute(query,data)
         database.commit()   
-    return flask.Response(status=200)
+    return jsonify({'msg':'Added To Readlater'})
 
 ##==========
 ##TODO: Remove from Read Later
 ##==========
-@app.route('/rm-rl',methods=['GET','POST'])
-def rm_rl():
-    #TODO: Login Check Not added
-    news_id = request.args.get('nid')
-    query = "DELETE FROM readlater WHERE post_id = '%d' AND user_id = '%d'"
-    data = (int(news_id),int(session['user_id']))
+@app.route('/rm-rl/<id>',methods=['GET','POST'])
+def rm_rl(id):
+    #TODO: Login Check Not Added Yet
+    news_id = id
+    print(news_id, session["user_id"])
+    query = "DELETE FROM readlater WHERE id = "+ str(news_id) +" AND user_id ="+ str(session["user_id"]) +""
     with database.cursor() as cursor:
-        cursor.execute(query,data)
+        cursor.execute(query)
         database.commit()   
-    return flask.Response(status=200)
+    return jsonify({'msg':'Removed from Read Later'})
 
 
 
@@ -973,10 +986,11 @@ def deleteComment():
     #TODO: session login check not implemented
     if request.method == 'POST':
         comment_id = request.form["comment_id"]
-        query = "DELETE FROM comments WHERE id=%s"
-        data = (int(comment_id))
+        print(comment_id)
+        query = "DELETE FROM comments WHERE id="+ comment_id+  ""
+        
         with database.cursor() as cursor:
-            cursor.execute(query,data)
+            cursor.execute(query)
             database.commit()
             return "Success"
 

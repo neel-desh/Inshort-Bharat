@@ -20,15 +20,16 @@
 
                 </div>
                 <div class="post-content">
+                  <input type="hidden" id="news_atfav" value="{{news['id']}}">
                   <h2>{{news['title']}}</h2>
                  
                   <img src="{{news['headerimg']}}" class="img-fluid" alt="">
-                  <p>To take a trivial example, which of us ever undertakes laborious  physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a there anyone who loves or pain that produces no resultant pleasure.</p>
-
-                  <p>Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious  some great physical exercise, except to.</p>
+{{news['content'] | safe}}
                   <div class="job-title-and-info" style="padding: 30px;">
                     <div class="buttons">
-                      <a class="save" href="#"><i data-feather="heart"></i>Add to favourite </a>
+                      
+
+                      <a class="save" href="/at-fav/{{news['id']}}"><i data-feather="heart"></i>Add to favourite </a>
                       <span class="job-apply-buttons" >
                       <a href="#" class="email"><i data-feather="download"></i>Save Offile</a>
 
@@ -153,7 +154,7 @@
                             <!-- Show only whos comment it -->
                             
                             {% if comment['user_id'] == session['user_id'] %}
-                            <button type="button" id="" class="reply-button" >Delete</button>
+                            <button type="button" id="{{comment['id']}}" class="reply-button" >Delete</button>
                             {% endif %}
                           </div>
 
@@ -202,6 +203,39 @@ $("#Addcomment").submit(function(e) {
          }); 
 });
 
+$('.reply-button').click(function(){
 
+  
+  var data = $(this).attr("id")
+  console.log(data)
+  $.ajax
+  ({ 
+      url: '/delete-comment',
+      data: {"comment_id": data},
+      type: 'POST',
+      success: function(result)
+      {
+        console.log("done")
+      },
+      error: function(e){
+        console.log("eror")
+      }
+  });
+});
+
+$('a.save').click(function(e){
+  e.preventDefault();
+
+  $.ajax({ 
+  url: $(this).attr('href'),
+  success: function(e){
+    console.log(e)
+  },
+  error: function(e){
+    console.log(e)
+  }
+  });
+  return false;
+  });
 </script>
 {% endblock %}
