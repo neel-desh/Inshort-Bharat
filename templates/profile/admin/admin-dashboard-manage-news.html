@@ -12,21 +12,22 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {% for news in newslist %}
                       <tr class="job-items">
                         <td class="title">
-                          <h5><a href="#">Land Development Marketer</a></h5>
+                          <h5><a href="/dp/{{news['category']}}/{{news['slug']}}">{{news['title']}}</a></h5>
  
                         </td>
                         <!-- <td class="application"><a href="#">6</a></td> -->
-                        <td class="deadline">Oct 31,  2020</td>
+                        <td class="deadline">{{news['date']}}</td>
                         
                         <td class="action">
-                          <a href="#" class="preview" title="Preview"><i data-feather="eye"></i></a>
-                          <a href="#" class="edit" title="Edit"><i data-feather="edit"></i></a>
-                          <a href="#" class="remove" title="Delete"><i data-feather="trash-2"></i></a>
+                          <a href="/dp/{{news['category']}}/{{news['slug']}}" target="_blank" class="preview" title="Preview"><i data-feather="eye"></i></a>
+                          <a href="/editnews/{{news['id']}}" target="_blank" class="edit" title="Edit"><i data-feather="edit"></i></a>
+                          <a href="/delete-news/{{news['id']}}"  class="remove" title="Delete"><i data-feather="trash-2"></i></a>
                         </td>
                       </tr>
-                      
+                      {% endfor %}
                     </tbody>
                   </table>
 
@@ -45,4 +46,27 @@
 
                 </div>
          
+{% endblock %}
+{% block customscript %}
+<script>
+  $(".remove").click(function(e) {
+    e.preventDefault(); // avoid to execute the actual submit of the form.   
+    $.ajax({
+           type: "POST",
+           url: $(this).attr("href"),
+           // serializes the form's elements.
+           success: function(data)
+           {
+             console.log("Done")
+             //$(this).animate({"background-color":"hotpink"},4000).show(1000);
+              // $(this).next().next().show().fadeOut(3000,()=>{$('#success').hide()})// show response
+           },
+           error:function(data)
+           {
+                //$(this).next().next().next().show().fadeOut(3000,()=>{$('#failed').hide()})// show response
+                console.log(data)
+           }          
+         });
+  });
+</script>
 {% endblock %}

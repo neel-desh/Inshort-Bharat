@@ -54,19 +54,19 @@ app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 # Mysql connection
 try:
-    # database = mysql.connector.connect(
-    # host="localhost",
-    # user="root",
-    # password="",
-    # database="inshort_bharat"
-    # )
     database = mysql.connector.connect(
-    host="mysql.stackcp.com",
-    user="inshortbharat-313731ad7f",
-    password="36811b7ybn",
-    database="inshortbharat-313731ad7f",
-    port=53505
+    host="localhost",
+    user="root",
+    password="",
+    database="inshort_bharat"
     )
+    # database = mysql.connector.connect(
+    # host="mysql.stackcp.com",
+    # user="inshortbharat-313731ad7f",
+    # password="36811b7ybn",
+    # database="inshortbharat-313731ad7f",
+    # port=53505
+    # )
     print("Connection Success")
 except Exception as e:
     print(e)
@@ -854,28 +854,31 @@ def admincreatenews():
 ##==========
 ##TODO: Manage Admin - News
 ##==========
-@app.route('/edit-news')
+@app.route('/edit-news',methods=['GET','POST'])
 def admineditnews():
     if 'account_type' not in session:
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
         return redirect(url_for("index"))
     #TODO: Just list the news created by this user give options liked edit, delete and read
-    query = "SELECT id, title, published_date FROM news where published_by = %s"
-    data = (session["user_id"])
+    query = "SELECT id, title, published_date, category, slug FROM news where published_by = "+ str(session["user_id"])+""
     createdby_news_list = []
     with database.cursor(buffered=True) as cursor:
-        cursor.execute(query,data)
+        cursor.execute(query)
         db_data = cursor.fetchall()
+        print(db_data)
         for row in db_data:
             news = {}
+            print(row)
             news["id"] = row[0]
             news["title"] = row[1]
             news["date"] = row[2]
+            news["category"] = row[3]
+            news["slug"] = row[4]
+
             createdby_news_list.append(news)
             
-
-    return render_template("profile/admin/admin-dashboard-manage-news.html")
+    return render_template("profile/admin/admin-dashboard-manage-news.html",newslist=createdby_news_list)
 
 ##==========
 ##TODO: Edit Admin DATA - News
@@ -933,11 +936,11 @@ def newsdata():
 ##==========
 ##TODO: Delete News
 ##==========
-@app.route("/delete-news",methods=['GET','POST'])
-def deletenews():
+@app.route("/delete-news/<nid>",methods=['GET','POST'])
+def deletenews(nid):
     #TODO: session login check not implemented
     if request.method == 'POST':
-        news_id = request.args.get('nid')
+        news_id = nid
         query = "DELETE FROM news WHERE id=%s AND published_by = %s"
         data = (news_id,session['user_id'])
         with database.cursor() as cursor:
