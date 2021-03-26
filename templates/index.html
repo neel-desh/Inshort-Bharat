@@ -124,24 +124,24 @@
     <div class="row">
       <div class="col">
         <div class="company-carousel owl-carousel">
-          
+          {% for category in categorylist %}
           <div class="company-wrap">
             <div class="thumb">
               <a href="#">
                 <img
-                  src="/static/images/company/company-logo-1.png"
+                  src="{{category['image']}}"
                   class="img-fluid"
                   alt=""
                 />
               </a>
             </div>
             <div class="body">
-              <h4><a href="">Deshmukh Media</a></h4>
-              <span>Mumbai City, Maharashtra</span>
-              <a href="" class="button">4 News</a>
+              <h4><a href="/{{category['name']}}">{{category['name']|upper}}</a></h4>
+              
+              <a href="/{{category['name']}}" class="button">{{ range(1, 10) | random }} News</a>
             </div>
           </div>
-
+          {% endfor %}
         </div>
       </div>
     </div>

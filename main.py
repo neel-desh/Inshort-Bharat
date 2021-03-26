@@ -96,6 +96,14 @@ def sentiment_scores(sentence):
 ##==========
 @app.route('/')
 def index():
+    categories = [
+                { "name" : "accounting", "image" : "https://images.pexels.com/photos/53621/calculator-calculation-insurance-finance-53621.jpeg" },
+                { "name" : "technology", "image" : "https://images.pexels.com/photos/4842496/pexels-photo-4842496.jpeg" },
+                { "name" : "astrology", "image" : "https://images.pexels.com/photos/1275413/pexels-photo-1275413.jpeg" },
+                { "name" : "crime", "image" : "https://images.pexels.com/photos/923681/pexels-photo-923681.jpeg" },
+                { "name" : "education", "image" : "https://images.pexels.com/photos/3059750/pexels-photo-3059750.jpeg" },
+                { "name" : "cricket", "image" : "https://images.pexels.com/photos/3718433/pexels-photo-3718433.jpeg" }
+                ]
     geoip_data = simple_geoip.get_geoip_data()
     location = geoip_data['location']
     city = location['city']
@@ -128,7 +136,8 @@ def index():
                             location=location,
                             weather_data=weather_data,
                             day=datetime.datetime.today().strftime('%d'),month=datetime.datetime.today().strftime('%h'),
-                            newslist=news_list)
+                            newslist=news_list,
+                            categorylist=categories)
 
 #date article reference : https://stackoverflow.com/questions/28189442/datetime-current-year-and-month-in-python
 
@@ -188,12 +197,9 @@ def get_weather(city):
         weather_data["desc"] = z[0]["description"]  
     return weather_data
 
-# from GoogleNews import GoogleNews
-# googlenews = GoogleNews()
 
-#
-#? Scraped News Category data using google news module  
-#
+
+
 # @app.route('/category/<category_name>',methods=['GET','POST'])
 # def category_scrape(category_name):
 #     if request.method == 'GET':
@@ -515,7 +521,9 @@ def logout():
 @app.route('/account')
 def account():
     #TODO: login Check
-
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     # List Favourites here
     user_id = session["user_id"]
     query = "SELECT favorites.id, title, slug, news.category, timestamp FROM favorites LEFT JOIN news on favorites.post_id = news.id WHERE favorites.user_id = "+str(user_id)+""
@@ -539,7 +547,9 @@ def account():
 ##==========
 @app.route('/edit-account')
 def editaccount():
-
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     return render_template("profile/dashboard-edit-profile.html")
 
 ##==========
@@ -548,7 +558,9 @@ def editaccount():
 @app.route('/view-bookmarked')
 def viewbookmarked():
     #TODO: login Check
-
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     # List Read Later here
     user_id = session["user_id"]
     query = "SELECT readlater.id, title, slug, news.category, timestamp, news.image FROM readlater LEFT JOIN news on readlater.post_id = news.id WHERE readlater.user_id = "+str(user_id)+""
@@ -574,6 +586,9 @@ def viewbookmarked():
 @app.route('/at-fav/<id>',methods=['GET','POST'])
 def at_fav(id):
     #TODO: Login Check Not Added Yet
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     news_id = id
     query = "INSERT INTO favorites(post_id, user_id) VALUES (%s,%s)"
     print(news_id,session['user_id'] )
@@ -588,6 +603,9 @@ def at_fav(id):
 @app.route('/rm-fav/<id>',methods=['GET','POST'])
 def rm_fav(id):
     #TODO: Login Check Not Added Yet
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     news_id = id
     print(news_id, session["user_id"])
     query = "DELETE FROM favorites WHERE id = "+ str(news_id) +" AND user_id ="+ str(session["user_id"]) +""
@@ -602,6 +620,9 @@ def rm_fav(id):
 @app.route('/at-rl/<id>',methods=['GET','POST'])
 def at_rl(id):
     #TODO: Login Check Not added
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     news_id = id
     query = "INSERT INTO readlater(post_id, user_id) VALUES (%s,%s)"
     print(news_id,session['user_id'] )
@@ -617,6 +638,9 @@ def at_rl(id):
 @app.route('/rm-rl/<id>',methods=['GET','POST'])
 def rm_rl(id):
     #TODO: Login Check Not Added Yet
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     news_id = id
     print(news_id, session["user_id"])
     query = "DELETE FROM readlater WHERE id = "+ str(news_id) +" AND user_id ="+ str(session["user_id"]) +""
@@ -639,6 +663,9 @@ def rm_rl(id):
 @app.route('/change-password',methods=['POST', 'GET'])
 def changepassword():
     #TODO: Login Check
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if request.method == 'POST':
         user_id = session["user_id"]
         #check if current password is correct
@@ -672,6 +699,9 @@ def changepassword():
 @app.route('/update-basicinfo',methods=['POST', 'GET'])
 def basicInfo():
     #TODO: Login Check
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if request.method == 'POST':
         user_id = session["user_id"]
         
@@ -691,6 +721,9 @@ def basicInfo():
 @app.route('/addProfImg',methods=['POST', 'GET'])
 def addProfileImage():
     #TODO: Login Check
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if request.method == 'POST':
         user_id = session["user_id"]
         #TODO: check if image exist
@@ -715,6 +748,9 @@ def addProfileImage():
 @app.route('/social-links',methods=['POST', 'GET'])
 def sociallinks():
     #TODO: Login Check
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if request.method == 'POST':
         user_id = session["user_id"]
         facebook = request.form["facebook"]
@@ -738,6 +774,9 @@ def sociallinks():
 @app.route('/delete-account',methods=['POST', 'GET'])
 def delaccount():
     #TODO: Login Check
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if request.method == 'POST':
         user_id = session["user_id"]
         #check if current password is correct
@@ -771,6 +810,9 @@ def delaccount():
 ##==========
 @app.route('/admin-account')
 def adminaccount():
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if 'account_type' not in session:
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
@@ -798,6 +840,9 @@ def adminaccount():
 ##==========
 @app.route('/admin-edit-account')
 def admineditaccount():
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if 'account_type' not in session:
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
@@ -820,6 +865,9 @@ def admineditaccount():
 ##==========
 @app.route('/create-news',methods=['GET','POST'])
 def admincreatenews():
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if 'account_type' not in session:
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
@@ -856,6 +904,9 @@ def admincreatenews():
 ##==========
 @app.route('/edit-news',methods=['GET','POST'])
 def admineditnews():
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if 'account_type' not in session:
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
@@ -885,6 +936,9 @@ def admineditnews():
 ##==========
 @app.route('/editnews/<nid>',methods=['GET','POST'])
 def admineditnewsdata(nid):
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if 'account_type' not in session:
         return redirect(url_for("index"))
     if int(session["account_type"]) != 1:
@@ -906,6 +960,13 @@ def admineditnewsdata(nid):
 
 @app.route('/editnewsdata',methods=['POST'])
 def newsdata():
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
+    if 'account_type' not in session:
+        return redirect(url_for("index"))
+    if int(session["account_type"]) != 1:
+        return redirect(url_for("index"))    
     if request.method == 'POST':
         try:
             id = request.form["id"]
@@ -939,6 +1000,13 @@ def newsdata():
 @app.route("/delete-news/<nid>",methods=['GET','POST'])
 def deletenews(nid):
     #TODO: session login check not implemented
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
+    if 'account_type' not in session:
+        return redirect(url_for("index"))
+    if int(session["account_type"]) != 1:
+        return redirect(url_for("index"))
     if request.method == 'POST':
         news_id = nid
         query = "DELETE FROM news WHERE id=%s AND published_by = %s"
@@ -959,6 +1027,10 @@ def deletenews(nid):
 @app.route("/add-comment",methods=['POST'])
 def addComment():
     #TODO: session login check not implemented
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         news_id = request.form["news_id"]
         comment = request.form["comment"]
@@ -973,6 +1045,9 @@ def addComment():
 @app.route("/edit-comment",methods=['POST'])
 def editComment():
     #TODO: session login check not implemented
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if request.method == 'POST':
         comment_id = request.form["comment_id"]
         #news_id = request.form["news_id"]
@@ -987,6 +1062,9 @@ def editComment():
 @app.route("/delete-comment",methods=['POST'])
 def deleteComment():
     #TODO: session login check not implemented
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if request.method == 'POST':
         comment_id = request.form["comment_id"]
         print(comment_id)
@@ -1028,6 +1106,9 @@ def listComments(news_id):
 @app.route('/report-comment',methods=['GET','POST'])
 def reportComment():
     #TODO: session login check
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if request.method == 'POST':
         comment_id = request.form["comment_id"]
         query = "UPDATE comments SET reports= ( reports + 1 ) WHERE id=%s"
@@ -1040,6 +1121,9 @@ def reportComment():
 @app.route('/rm-report-comment',methods=['GET','POST'])
 def removeReport():
     #TODO: session login check
+    # If not true than redirect
+    if not loginCheck():
+        return redirect(url_for('login'))
     if request.method == 'POST':
         comment_id = request.form["comment_id"]
         query = "UPDATE comments SET reports= ( reports - 1 ) WHERE id=%s"
@@ -1056,9 +1140,7 @@ def removeReport():
 
 
 
-@app.route('/jd')
-def jd():
-    return render_template("news/job-details.html")
+
 
 ##?================================================
 ##? Misc Pages
@@ -1133,7 +1215,21 @@ def url_gen(url):
     cleanString = re.sub('\W+','-', trim_url )
     return cleanString.lower()
 
+def loginCheck():
+    if 'user_id' not in session:
+        return False
+    else:
+        return True
 
+def isAdminCheck():
+    if 'account_type' in session:
+        if int(session["account_type"]) != 1:
+            return True
+        else:
+            return False
+    else:
+        return False
+       
 
 def sendBulkEmail():
     query = "select email from newsletter"
@@ -1163,10 +1259,6 @@ def uploadImageFirebase(image,storagePath):
 @app.errorhandler(404) 
 def not_found(e): 
   return render_template("404.html")
-
-
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
