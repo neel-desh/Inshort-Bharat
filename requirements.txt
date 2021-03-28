@@ -16,3 +16,4 @@ vaderSentiment
 pyrebase
 googletrans
 gensim==3.8.3
+pickle

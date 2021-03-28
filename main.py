@@ -18,6 +18,11 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from googletrans import Translator
 from flask import Markup
 from gensim.summarization.summarizer import summarize
+import bs4
+import pickle
+
+pickle_in = open("models\model.pickle","rb")
+classifier = pickle.load(pickle_in)
 
 #Firebase Config
 firebaseConfig = {
@@ -333,9 +338,10 @@ def dp(category,slug):
             news['twitter'] = row[11]
             news['google'] = row[12]    
     
-    if session['language'] == 'Hindi':        
-        result = translator.translate(news['content'], src='en',dest='hi')
-        news['content'] = result.text
+    if session.get("language",0):
+        if session['language'] == 'Hindi':        
+            result = translator.translate(news['content'], src='en',dest='hi')
+            news['content'] = result.text
     #Comment
     comment_list = []
     print(news)
@@ -1224,6 +1230,16 @@ def url_gen(url):
     cleanString = re.sub('\W+','-', trim_url )
     return cleanString.lower()
 
+@app.template_filter()
+def news_summarizer(data):
+    """Gives summary"""
+    
+    data = bs4.BeautifulSoup(data,'html.parser')
+    news = data.text
+    summary = summarize(news)
+    # print(summary)
+    return summary
+
 def loginCheck():
     if 'user_id' not in session:
         return False
@@ -1238,7 +1254,14 @@ def isAdminCheck():
             return False
     else:
         return False
-       
+
+@app.template_filter()      
+def classifyNews(news):
+    data = bs4.BeautifulSoup(news,'html.parser')
+    data = data.text
+    prediction = classifier.predict([data])
+    print(prediction)
+    return prediction[0]
 
 def sendBulkEmail():
     query = "select email from newsletter"

@@ -16,7 +16,7 @@
                 <div class="content">
                   <h3><a href="">{{news['title']}}</a></h3>
 
-                  <p>{{news['content'] | safe }}</p>
+                  <p>{{news['content'] | news_summarizer}}</p>
             
                 </div>
                 <div class="read-more">

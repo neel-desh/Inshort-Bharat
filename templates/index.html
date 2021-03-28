@@ -56,15 +56,21 @@
                 class="img-fluid"
                 alt=""
               />
-              <span style="margin-top: 10px;" class="alert alert-danger">
-                <strong>Possibly Fake News!</strong>.
+              {% if news['content'] | classifyNews == 'REAL' %}
+              <span style="margin-top: 10px;" class="alert alert-success">
+              <center> <strong style="text-align: center;">News is Real</strong></center>
               </span>
+              {% else %}
+              <span style="margin-top: 10px;" class="alert alert-danger">
+                <center><strong >News is Fake</strong></center>
+              </span>    
+              {% endif %}
           </div>
           <div class="content" style="padding-left: 10px;">
             <h3>
               <a href="">{{news['title']}}</a>
             </h3>
-          {{news['content'] | safe  }}
+          {{news['content'] | news_summarizer  }}
           </div>
           <div class="read-more">
           
@@ -72,7 +78,7 @@
             <a href="/at-rl/{{news['id']}}" class="button rl">Read later</a>
             
       
-            <button class="button"><a href="/dp/{{news['category']}}/{{news['slug']}}">Read More</a> </button>
+            <button style="margin-top: 5px;" class="button"><a href="/dp/{{news['category']}}/{{news['slug']}}">Read More</a> </button>
 
             <span id="success" style="display: none;" class="alert alert-success">
               <strong>Success!</strong>.
