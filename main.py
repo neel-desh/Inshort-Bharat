@@ -15,6 +15,9 @@ import datetime
 import re
 import pyrebase
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer 
+from googletrans import Translator
+from flask import Markup
+from gensim.summarization.summarizer import summarize
 
 #Firebase Config
 firebaseConfig = {
@@ -42,6 +45,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config.update(GEOIPIFY_API_KEY='at_v1LEHVAlNSSUFAb6T3ONOJcNdy2WU')
 newsapi = NewsApiClient(api_key="18cd6534eefc44db90cb02e7ef2cb9fc")
 simple_geoip = SimpleGeoIP(app)
+translator = Translator()
 
 # Email config
 app.config['MAIL_SERVER']='smtp.stackmail.com'
@@ -140,6 +144,15 @@ def index():
                             categorylist=categories)
 
 #date article reference : https://stackoverflow.com/questions/28189442/datetime-current-year-and-month-in-python
+##==========
+##* Change Language
+##==========
+@app.route('/changelang',methods=['GET','POST'])
+def changelang():
+    lang = request.form['lang']
+    if lang:
+        session['language'] = lang
+        return "Success"
 
 #
 #* Scraper & application object store
@@ -272,8 +285,9 @@ def news():
 ##==========
 ##TODO: news detail page
 ##==========
-@app.route('/dp/<category>/<slug>')
+@app.route('/dp/<category>/<slug>',methods=['GET','POST'])
 def dp(category,slug):
+     
     news = {}
     # Query fetches news and publisher details
     query = """
@@ -307,7 +321,7 @@ def dp(category,slug):
             #print(row[1],row[2])
             news['id'] = row[0]
             news['title'] = row[1]
-            news['content'] = row[2]
+            news['content'] = Markup(row[2])
             news['date'] = row[3]
             news['headerimg'] = row[4]
             news['tags'] = row[5]
@@ -317,7 +331,11 @@ def dp(category,slug):
             news['instagram'] = row[9]
             news['linkedin'] = row[10]
             news['twitter'] = row[11]
-            news['google'] = row[12]            
+            news['google'] = row[12]    
+    
+    if session['language'] == 'Hindi':        
+        result = translator.translate(news['content'], src='en',dest='hi')
+        news['content'] = result.text
     #Comment
     comment_list = []
     print(news)
@@ -489,7 +507,7 @@ def changefp():
             return redirect(url_for('login'))        
         else:
             return render_template_string("Error Bad Person U")
-    return render_template("forgot-changepass.html")
+    return render_template("authentication/forgot-changepass.html")
 ##==========
 ##TODO: Logout
 ##==========
@@ -726,13 +744,13 @@ def addProfileImage():
             filename = secure_filename(image.filename)
             storagePath = "profile/" + str(session["user_id"]) + "/"+ filename
             image_link = uploadImageFirebase(image,storagePath)
-        data = (image_link,int(user_id))
-        with database.cursor(buffered=True) as cursor:
-            cursor.execute(query,data)
-            database.commit()
-            return "Success"
+            data = (image_link,int(user_id))
+            with database.cursor(buffered=True) as cursor:
+                cursor.execute(query,data)
+                database.commit()
+                return "Success"
     else:
-        return "None"
+        return "Not Updated"
 ##==========
 ##TODO: Social Accounts
 ##==========

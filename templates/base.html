@@ -70,10 +70,10 @@
                 {% endif %}
 
 
-                <form action="/?lang=hindi" method="get">
-                  <select class="selectpicker select-language" data-width="fit" onchange="this.form.submit()">
-                    <option data-content='<span class="flag-icon flag-icon-us"></span> English'>English</option>
-                    <option selected data-content='<span class="flag-icon flag-icon-in"></span> Hindi'>Hindi</option>
+                <form action="/changelang" method="POST">
+                  <select id="lang" class="selectpicker select-language" data-width="fit"  onchange="changelang()">
+                    <option value="en" {% if session['language'] == 'English' %}selected{%endif%} data-content='<span class="flag-icon flag-icon-us"></span> English'>English</option>
+                    <option value="hi" {% if session['language'] == 'Hindi' %}selected{%endif%} data-content='<span class="flag-icon flag-icon-in"></span> Hindi'>Hindi</option>
                   </select>
                 </form>
 
@@ -310,6 +310,28 @@
       
         
       });
+      function changelang(e){
+        var form = $(this);
+        var url = "/changelang";
+        var language = $('#lang').find(":selected").text()
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: {"lang":language}, // serializes the form's elements.
+               success: function(data)
+               {
+                    //$('#success').show().fadeOut(3000,()=>{$('#success').hide()})// show response
+                    console.log(data)
+
+               },
+               error:function(data)
+               {
+                    //$('#failed').show().fadeOut(3000,()=>{$('#failed').hide()})// show response
+                    console.log(data)
+               }
+              
+             });
+      }
       </script>
 {% block extrascript %}
 

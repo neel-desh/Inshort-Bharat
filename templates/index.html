@@ -72,7 +72,7 @@
             <a href="/at-rl/{{news['id']}}" class="button rl">Read later</a>
             
       
-            <a href="/dp/{{news['category']}}/{{news['slug']}}" class="button">Read More</a>
+            <button class="button"><a href="/dp/{{news['category']}}/{{news['slug']}}">Read More</a> </button>
 
             <span id="success" style="display: none;" class="alert alert-success">
               <strong>Success!</strong>.
@@ -152,7 +152,7 @@
 {% block extrascript %}
 <script>
 //This Scripts adds data to the fav and readlater
-  $(".button, .rl").click(function(e) {
+  $("a.button, .rl").click(function(e) {
     e.preventDefault(); // avoid to execute the actual submit of the form.   
     $.ajax({
            type: "POST",
