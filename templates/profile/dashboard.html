@@ -342,9 +342,9 @@
                 <div class="dashboard-menu">
                   
                   <ul>
-                    <li><i class="fas fa-home"></i><a href="/account">Dashboard</a></li>
-                    <li><i class="fas fa-user"></i><a href="/edit-account">Edit Profile</a></li>
-                    <li><i class="fas fa-heart"></i><a href="/view-bookmarked">Read Later</a></li>
+                    <li class="{{'active' if active_page == 'account' }}"><i class="fas fa-home"></i><a href="/account">Dashboard</a></li>
+                    <li class="{{'active' if active_page == 'editaccount' }}"><i class="fas fa-user"></i><a href="/edit-account">Edit Profile</a></li>
+                    <li class="{{'active' if active_page == 'bookmark' }}"><i class="fas fa-heart"></i><a href="/view-bookmarked">Read Later</a></li>
 
                   </ul>
                   

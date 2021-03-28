@@ -200,20 +200,11 @@ def get_weather(city):
 
 
 
-# @app.route('/category/<category_name>',methods=['GET','POST'])
-# def category_scrape(category_name):
-#     if request.method == 'GET':
-#         category_name = category_name
-#         if not session[category_name]:
-#             response_obj = newsapi.get_everything(
-#                                             language='en',
-#                                             category=category_name)
-#             all_articles = response_obj["articles"]
-#             session[category_name] = all_articles
-
-#         else:
-#             pass   
-#     return "hi"
+@app.route('/category/<category_name>',methods=['GET','POST'])
+def category_scrape(category_name):
+    #TODO: RETURN CATEGORY
+    return render_template("news/blog-grid.html")
+        
 
 
 ##==========

@@ -82,7 +82,7 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
-                  <li class="menu-item active"><a title="Home" href="/">Home</a></li>
+                  <li class="menu-item"><a title="Home" href="/">Home</a></li>
                   <li class="menu-item ">
                     <a href="/web-stories">Web Stories</a>
                   </li>
@@ -285,11 +285,11 @@
                 </div> -->
                 <div class="dashboard-menu">
                   <ul>
-                    <li class="active"><i class="fas fa-home"></i><a href="/admin-account">Dashboard</a></li>
-                    <li><i class="fas fa-user"></i><a href="/admin-edit-account">Edit Profile</a></li>
+                    <li class="{{'active' if active_page == 'admindash' }}" ><i class="fas fa-home"></i><a href="/admin-account">Dashboard</a></li>
+                    <li class="{{'active' if active_page == 'editaccount' }}"><i class="fas fa-user"></i><a href="/admin-edit-account">Edit Profile</a></li>
                     
-                    <li><i class="fas fa-plus-square"></i><a href="/create-news">Post News</a></li>
-                    <li><i class="fas fa-briefcase"></i><a href="/edit-news">Manage News</a></li>
+                    <li class="{{'active' if active_page == 'createnews' }}"><i class="fas fa-plus-square"></i><a href="/create-news">Post News</a></li>
+                    <li class="{{'active' if active_page == 'editnews' }}"><i class="fas fa-briefcase"></i><a href="/edit-news">Manage News</a></li>
                   
                   </ul>
                   <ul class="delete">

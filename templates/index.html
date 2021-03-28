@@ -136,9 +136,9 @@
               </a>
             </div>
             <div class="body">
-              <h4><a href="/{{category['name']}}">{{category['name']|upper}}</a></h4>
+              <h4><a href="/category/{{category['name']}}">{{category['name']|upper}}</a></h4>
               
-              <a href="/{{category['name']}}" class="button">{{ range(1, 10) | random }} News</a>
+              <a href="/category/{{category['name']}}" class="button">{{ range(1, 10) | random }} News</a>
             </div>
           </div>
           {% endfor %}
