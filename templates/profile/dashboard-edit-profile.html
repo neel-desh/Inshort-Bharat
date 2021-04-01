@@ -27,6 +27,12 @@
                     <div class="col-sm-9">
                       <input type="submit" class="button" value="Update Profile">
                     </div>
+                    <span id="success1" style="display: none;" class="alert alert-success">
+                      <center><strong>Update Success</strong></center>
+                    </span>
+                    <span id="failed1" style="display: none;"  class="alert alert-danger">
+                    <center>  <strong>Some Error!</strong></center>
+                    </span>
                   </div>
                 </form>
                
@@ -51,6 +57,12 @@
                     <div class="col-sm-9">
                       <input type="submit" class="button" value="Update Name">
                     </div>
+                    <span id="success2" style="display: none;" class="alert alert-success">
+                      <center><strong>Update Success</strong></center>
+                    </span>
+                    <span id="failed2" style="display: none;"  class="alert alert-danger">
+                    <center>  <strong>Some Error!</strong></center>
+                    </span>
                   </div>
                 </form>
               
@@ -80,6 +92,12 @@
                       <div class="col-sm-9">
                         <input type="submit" class="button" value="Save Changes">
                       </div>
+                      <span id="success3" style="display: none;" class="alert alert-success">
+                        <center><strong>Update Success</strong></center>
+                      </span>
+                      <span id="failed3" style="display: none;"  class="alert alert-danger">
+                      <center>  <strong>Some Error!</strong></center>
+                      </span>
                     </div>
                   </div>
                 </form>
@@ -93,12 +111,14 @@
 <script>
 // this is the id of the form
 $(".dashboard-form").submit(function(e) {
-
+    
     e.preventDefault(); // avoid to execute the actual submit of the form.
-
+   
     var form = $(this);
+    var id = form.attr('id');
     var url = form.attr('action');
     var formData = new FormData(this)
+    console.log(id);
     
     $.ajax({
            type: "POST",
@@ -106,11 +126,19 @@ $(".dashboard-form").submit(function(e) {
            data: formData, // serializes the form's elements.
            success: function(data)
            {
-               console.log(data)
+            $("#success" + id).show().fadeOut(3000,()=>{$('#success'+id).hide()})// show response
+             
+            console.log(data)
+
            },           
            cache: false,
            contentType: false,
            processData: false,
+           error:function(data){
+            $("#failed" + id).show().fadeOut(3000,()=>{$('#failed'+id).hide()})// show response
+             
+            console.log(data)
+           }
          });    
 });
 </script>

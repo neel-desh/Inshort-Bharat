@@ -7,7 +7,7 @@
         <h4 class="title">Favourites</h4>
         {% if favs|length > 0 %}
         {% for fav in favs%}
-        <div class="activity-list">
+        <div class="activity-list" id="{{fav['id']}}">
         
         <div class="content">
             <a href="/dp/{{fav['category']}}/{{fav['slug']}}"><h5>{{fav['title']}}</h5></a>
@@ -17,17 +17,20 @@
         <div class="close-activity">
             <a href="/rm-fav/{{fav['id']}}" class="save"><i class="fas fa-times"></i> </a>
         </div>
+        
         </div>
         {% endfor %}
         {% else %}
-        <div class="activity-list">
         
+        <div class="body">
             <div class="content">
                 <h5>You dont have any Favourites articles!!! Add some</h5>
           
             </div>
+        </div>
 
-            </div>
+
+          
         {% endif %}
 
 
@@ -45,6 +48,10 @@
         url: $(this).attr('href'),
         success: function(e){
           console.log(e)
+          current =  $('a.save').parent().parent().attr('id');
+          console.log(current)
+          $("#" + current).remove();
+
         },
         error: function(e){
           console.log(e)

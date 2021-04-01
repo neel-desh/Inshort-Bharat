@@ -91,10 +91,12 @@ $("#contact-form").submit(function(e) {
          success: function(data)
          {
               $('#success').show().fadeOut(3000,()=>{$('#success').hide()})// show response
+              $("#contact-form").trigger('reset');
          },
          error:function(data)
          {
               $('#failed').show().fadeOut(3000,()=>{$('#failed').hide()})// show response
+              
          }
         
        });

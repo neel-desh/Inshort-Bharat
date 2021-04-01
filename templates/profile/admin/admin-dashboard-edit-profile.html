@@ -18,6 +18,12 @@
                       <div class="col-sm-9">
                         <input type="submit" class="button" value="Update Profile">
                       </div>
+                      <span id="success1" style="display: none;" class="alert alert-success">
+                        <center><strong>Update Success</strong></center>
+                      </span>
+                      <span id="failed1" style="display: none;"  class="alert alert-danger">
+                      <center>  <strong>Some Error!</strong></center>
+                      </span>
                     </div>
                   </form>
                     <form id="2" method="POST" action="/update-basicinfo" class="dashboard-form">
@@ -41,6 +47,12 @@
                         <div class="col-sm-9">
                           <input type="submit" class="button" value="Update Name">
                         </div>
+                        <span id="success2" style="display: none;" class="alert alert-success">
+                          <center><strong>Update Success</strong></center>
+                        </span>
+                        <span id="failed2" style="display: none;"  class="alert alert-danger">
+                        <center>  <strong>Some Error!</strong></center>
+                        </span>
                       </div>
                     </form>
 
@@ -100,7 +112,7 @@
                       </div>
                     </div>
                   </div> -->
-                  <form method="POST" action="/social-links" class="dashboard-form">
+                  <form id="3" method="POST" action="/social-links" class="dashboard-form">
                   <div class="dashboard-section social-inputs">
                     <h4><i data-feather="cast"></i>Social Networks</h4>
                     <div class="form-group row">
@@ -161,6 +173,12 @@
                     <div class="col-sm-9">
                       <input type="submit" class="button" value="Save Changes">
                     </div>
+                    <span id="success3" style="display: none;" class="alert alert-success">
+                      <center><strong>Update Success</strong></center>
+                    </span>
+                    <span id="failed3" style="display: none;"  class="alert alert-danger">
+                    <center>  <strong>Some Error!</strong></center>
+                    </span>
                   </div>
                 </form>
                   <form id="4" action="/change-password" method="POST" class="dashboard-form">
@@ -189,6 +207,12 @@
                         <div class="col-sm-9">
                           <input type="submit" class="button" value="Save Changes">
                         </div>
+                        <span id="success4" style="display: none;" class="alert alert-success">
+                          <center><strong>Update Success</strong></center>
+                        </span>
+                        <span id="failed4" style="display: none;"  class="alert alert-danger">
+                        <center>  <strong>Some Error!</strong></center>
+                        </span>
                       </div>
                     </div>
                   </form>
@@ -204,6 +228,8 @@ $(".dashboard-form").submit(function(e) {
     var form = $(this);
     var url = form.attr('action');
     var formData = new FormData(this)
+    var id = form.attr('id');
+    console.log(id);
     
     $.ajax({
            type: "POST",
@@ -211,11 +237,17 @@ $(".dashboard-form").submit(function(e) {
            data: formData, // serializes the form's elements.
            success: function(data)
            {
-               console.log(data)
+            $("#success" + id).show().fadeOut(3000,()=>{$('#success'+id).hide()})// show response
+             
+            console.log(data)
            },           
            cache: false,
            contentType: false,
            processData: false,
+           error: function(){
+            $("#failed" + id).show().fadeOut(3000,()=>{$('#failed'+id).hide()})// show response
+            console.log(data)
+           }
          });   
 });
 </script>

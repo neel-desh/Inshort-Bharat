@@ -15,7 +15,7 @@
                     </thead>
                     <tbody>
                       {% for news in newslist %}
-                      <tr class="job-items">
+                      <tr class="job-items" id="{{news['id']}}">
                         <td class="title">
                           <h5><a href="/dp/{{news['category']}}/{{news['slug']}}">{{news['title']}}</a></h5>
  
@@ -53,12 +53,14 @@
 <script>
   $(".remove").click(function(e) {
     e.preventDefault(); // avoid to execute the actual submit of the form.   
+    var trid = $(this).closest('tr').attr('id'); // table row ID
     $.ajax({
            type: "POST",
            url: $(this).attr("href"),
            // serializes the form's elements.
            success: function(data)
            {
+             $('#'+trid).remove();
              console.log("Done")
              //$(this).animate({"background-color":"hotpink"},4000).show(1000);
               // $(this).next().next().show().fadeOut(3000,()=>{$('#success').hide()})// show response

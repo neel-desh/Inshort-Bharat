@@ -3,9 +3,9 @@
               {% block dashboardsection %}
 
                   <div class="bookmark-area">
-                  {% if readlater|length > 0 %}
+                  {% if readlaters|length > 0 %}
                   {% for rl in readlaters%}
-                    <div class="job-list">
+                    <div class="job-list" id="{{rl['id']}}">
                       <div class="thumb">
                         <a href="#">
                           <img src="{{rl['image']}}" class="img-fluid" alt="">
@@ -13,7 +13,7 @@
                       </div>
                       <div class="body">
                         <div class="content">
-                          <h5><a href="/dp/{{rl['category']}}/{{rl['slug']}}">{{rl['title']}}</a></h5>
+                          <p><a href="/dp/{{rl['category']}}/{{rl['slug']}}">{{rl['title']}}</a></p>
                           <div class="info">
                            <p class="deadline">Added: {{rl['timestamp']}}</p>
                           </div>
@@ -52,6 +52,9 @@
                   url: $(this).attr('href'),
                   success: function(e){
                     console.log(e)
+                    current =  $('a.bookmark-remove').parent().parent().parent().attr('id');
+                    console.log(current)
+                    $("#" + current).remove();
                   },
                   error: function(e){
                     console.log(e)

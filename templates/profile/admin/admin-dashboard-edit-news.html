@@ -159,6 +159,7 @@
           {
                $('#data-inserted').hide()
                $('#data-inserted-msg').show().fadeOut(6000,()=>{$('#success').hide()})// show response
+               window.history.back();
           },
           cache: false,
           contentType: false,

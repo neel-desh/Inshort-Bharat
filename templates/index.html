@@ -71,6 +71,13 @@
               <a href="">{{news['title']}}</a>
             </h3>
           {{news['content'] | news_summarizer  }}
+          <hr>
+          <span id="success" style="display: none;" class="alert alert-success">
+            <center><strong>Added to read later!!!</strong></center>
+          </span>
+          <span id="failed" style="display: none;"  class="alert alert-danger">
+          <center>  <strong>Some Error! While Adding.</strong></center>
+          </span>
           </div>
           <div class="read-more">
           
@@ -80,12 +87,7 @@
       
             <button style="margin-top: 5px;" class="button"><a href="/dp/{{news['category']}}/{{news['slug']}}">Read More</a> </button>
 
-            <span id="success" style="display: none;" class="alert alert-success">
-              <strong>Success!</strong>.
-            </span>
-            <span id="failed" style="display: none;"  class="alert alert-danger">
-              <strong>Some Error!</strong>.
-            </span>
+
 
             <br />
             <p style="padding-top: 5px" class="deadline">
@@ -166,12 +168,12 @@
            // serializes the form's elements.
            success: function(data)
            {
-             //$(this).animate({"background-color":"hotpink"},4000).show(1000);
-               $(this).next().next().show().fadeOut(3000,()=>{$('#success').hide()})// show response
+            
+               $("#success").show().fadeOut(3000,()=>{$('#success').hide()})// show response
            },
            error:function(data)
            {
-                $(this).next().next().next().show().fadeOut(3000,()=>{$('#failed').hide()})// show response
+                $('#failed').next().show().fadeOut(3000,()=>{$('#failed').hide()})// show response
                 //console.log(data)
            }          
          });

@@ -8,7 +8,7 @@
                     <div class="form-group row">
                       <label class="col-md-3 col-form-label">Title</label>
                       <div class="col-md-9">
-                        <input  type="text" name="news-title" class="form-control" placeholder="Your News title here">
+                        <input  type="text" name="news-title" class="form-control" placeholder="Your News title here" required>
                       </div>
                     </div>
                   
@@ -22,7 +22,7 @@
                       <div class="form-group row">
                         <label class="col-md-3 col-form-label">Header image</label>
                         <div class="col-md-9">
-                          <input id="image" name="image" type="file"  class="form-control">
+                          <input id="image" name="image" type="file"  class="form-control" required>
                         </div>
                       </div> 
 
@@ -32,7 +32,7 @@
                         <div class="row">
                           <div class="col-md-6">
                             <div class="form-group">
-                              <select name="category" class="form-control">
+                              <select name="category" class="form-control" required>
                                 <option>Select Category</option>
                                 <option value="accounting">Accounting</option>
                                 <option value="technology">Technology</option>
@@ -51,13 +51,13 @@
                     <div class="row">
                       <label class="col-md-3 col-form-label">News Description</label>
                       <div class="col-md-9">
-                        <textarea name="content" id="mytextarea" class="tinymce-editor tinymce-editor-1" placeholder="Description text here"></textarea>
+                        <textarea name="content" id="mytextarea" class="tinymce-editor tinymce-editor-1" placeholder="Description text here" required></textarea>
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-md-3 col-form-label">Tags</label>
                       <div class="col-md-9">
-                        <input  type="text" name="tags" class="form-control" placeholder="Eg: terror,mumbai,crime">
+                        <input  type="text" name="tags" class="form-control" placeholder="Eg: terror,mumbai,crime" required>
                       </div>
                     </div>
                       <div class="form-group row">
@@ -66,7 +66,7 @@
                         <div class="row">
                           <div class="col-md-6">
                             <div class="form-group">
-                              <select  name="locality" class="form-control">
+                              <select  name="locality" class="form-control" required>
                                 <option>State</option>
                                 <option value="maharashtra">Maharahstra</option>
                                 <option value="delhi">Delhi</option>
@@ -181,6 +181,7 @@
            {
                 $('#data-inserted').hide()
                 $('#data-inserted-msg').show().fadeOut(6000,()=>{$('#success').hide()})// show response
+                $("#create-news").trigger('reset');
            },
            cache: false,
            contentType: false,
