@@ -1245,7 +1245,11 @@ def news_summarizer(data):
     
     data = bs4.BeautifulSoup(data,'html.parser')
     news = data.text
-    summary = summarize(news)
+    try:
+        summary = summarize(news)
+    
+    except ValueError:
+        summary = "This News cant be summarize"
     # print(summary)
     return summary
 
