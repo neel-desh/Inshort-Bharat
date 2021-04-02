@@ -21,7 +21,7 @@ from gensim.summarization.summarizer import summarize
 import bs4
 import pickle
 
-pickle_in = open("models/model.pickle","rb")
+pickle_in = open("/models/model.pickle","rb")
 classifier = pickle.load(pickle_in)
 
 #Firebase Config
