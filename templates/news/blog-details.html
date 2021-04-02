@@ -4,7 +4,7 @@
 
 
     <div class="alice-bg  section-padding-bottom">
-      <div class="container">
+      <div id="newsoffline" class="container">
 
         <div class="row">
           
@@ -21,7 +21,7 @@
                 </div>
                 <div class="post-content">
                   <input type="hidden" id="news_atfav" value="{{news['id']}}">
-                  <h2>{{news['title']}}</h2>
+                  <h2 id="title" >{{news['title']}}</h2>
                  
                   <img src="{{news['headerimg']}}" class="img-fluid" alt="">
 
@@ -150,8 +150,10 @@
                           <div class="reply">
                             {% if comment['sentiment'] == 'Positive' %}
                             <button type="button" class="btn btn-success" >{{comment['sentiment']}}</button>
-                            {% else %}
+                            {% elif comment['sentiment'] == 'Negative' %}
                             <button type="button" class="btn btn-danger" >{{comment['sentiment']}}</button>
+                            {% else%}
+                            <button type="button" class="btn btn-info" >{{comment['sentiment']}}</button>
                             {% endif %}
                             <!-- Show only whos comment it -->
                             
@@ -181,6 +183,7 @@
         </div>
       </div>
     </div>
+    <div id="editor"></div>
 {% endblock %}
 {% block extrascript %}
 <script>
@@ -200,7 +203,8 @@ $("#Addcomment").submit(function(e) {
            data: form.serialize(), // serializes the form's elements.
            success: function(data)
            {
-               alert(data); // show response from the php script.
+              console.log(data); // show response from the php script.
+              window.location.reload();
            }
          }); 
 });
@@ -218,9 +222,11 @@ $('.reply-button').click(function(){
       success: function(result)
       {
         console.log("done")
+        window.location.reload();
+
       },
       error: function(e){
-        console.log("eror")
+        console.log("error")
       }
   });
 });
@@ -231,6 +237,7 @@ $('a.save').click(function(e){
   $.ajax({ 
   url: $(this).attr('href'),
   success: function(e){
+    $('a.save').text("Added To Favourite").removeAttr('href')
     console.log(e)
   },
   error: function(e){
@@ -239,5 +246,29 @@ $('a.save').click(function(e){
   });
   return false;
   });
+
+  $(document).ready(function(){
+//Save Offline Code goes here
+var doc = jsPDF();
+var specialElementHandlers = {
+    '#newsoffline': function (element, renderer) {
+        return true;
+    }
+};
+
+$('a.email').click(function () {
+  alert("This will take 5 seconds! Thanks for Downloading!!!!")
+    doc.fromHTML($('#newsoffline').html(), 15, 15, {
+        'width': 170,
+        'elementHandlers': specialElementHandlers
+    });
+    filename = $("#title").text()
+    setTimeout(function(){
+      doc.save(filename + '.pdf');
+      },5000);
+});
+
+  });
+  
 </script>
 {% endblock %}

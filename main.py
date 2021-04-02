@@ -63,19 +63,19 @@ app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 # Mysql connection
 try:
-    # database = mysql.connector.connect(
-    # host="localhost",
-    # user="root",
-    # password="",
-    # database="inshort_bharat"
-    # )
     database = mysql.connector.connect(
-    host="mysql.stackcp.com",
-    user="inshortbharat-313731ad7f",
-    password="36811b7ybn",
-    database="inshortbharat-313731ad7f",
-    port=53505
+    host="localhost",
+    user="root",
+    password="",
+    database="inshort_bharat"
     )
+    # database = mysql.connector.connect(
+    # host="mysql.stackcp.com",
+    # user="inshortbharat-313731ad7f",
+    # password="36811b7ybn",
+    # database="inshortbharat-313731ad7f",
+    # port=53505
+    # )
     print("Connection Success")
 except Exception as e:
     print(e)
@@ -1055,7 +1055,16 @@ def addComment():
         with database.cursor() as cursor:
             cursor.execute(query,data)
             database.commit()
-            return "Success"
+            print(cursor)
+            id = cursor.lastrowid
+            msg = {
+                "id": id,
+                "comment" : comment,
+                "sentiment" : sentiment,
+                "user_img" : session['user_img'],
+                "user_name" : session['name'],
+            }
+            return jsonify(msg)
 
 @app.route("/edit-comment",methods=['POST'])
 def editComment():
