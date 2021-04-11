@@ -12,21 +12,25 @@
 
             <div class="blog-post-details-container">
               <div class="blog-details-wrapper">
-                <div class="info">
+                <!-- <div class="info">
                   <span class="date">{{news['date']}}</span>
                   <span class="author"><a href="#"><i data-feather="user"></i>{{news['authorname']}}</a></span>
                   <span class="comments"><i data-feather="message-circle"></i>{{comments|length}}</span>
 
 
-                </div>
+                </div> -->
                 <div class="post-content">
                   <input type="hidden" id="news_atfav" value="{{news['id']}}">
+
                   <h2 id="title" >{{news['title']}}</h2>
                  
                   <img src="{{news['headerimg']}}" class="img-fluid" alt="">
 
+<div id="news-real-content">
+  {{ news['content'] | safe }}
 
-                  {{ news['content'] | safe }}
+</div>
+
                   <div class="job-title-and-info" style="padding: 30px;">
                     <div class="buttons">
                       
@@ -34,10 +38,40 @@
                       <a class="save" href="/at-fav/{{news['id']}}"><i data-feather="heart"></i>Add to favourite </a>
                       <span class="job-apply-buttons" >
                       <a href="#" class="email"><i data-feather="download"></i>Save Offile</a>
-
                       </span>
+                      
                     </div>
               
+                  </div>
+                  <div class="job-title-and-info" >
+                    <button type="button" 
+                      style=' background: #246df8;
+                      color: #ffffff;
+                      font-family: "Poppins", sans-serif;
+                      font-weight: 500;
+                      padding: 11px 20px;' id="listen-content" value="{{ session['language'] }}">
+                       <i class="fa fa-play"></i> Play</button>
+                      <button
+                      style=' background: #246df8;
+                      color: #ffffff;
+                      font-family: "Poppins", sans-serif;
+                      font-weight: 500;
+                      padding: 11px 20px;''
+                      id="resume" disabled> <i class="fa fa-play-circle"></i> Resume</button>
+                      <button
+                    style=' background: #246df8;
+                    color: #ffffff;
+                    font-family: "Poppins", sans-serif;
+                    font-weight: 500;
+                    padding: 11px 20px;''
+                    id="paused" disabled> <i class="fa fa-pause"></i> Pause</button>
+                    <button
+                    style=' background: #246df8;
+                    color: #ffffff;
+                    font-family: "Poppins", sans-serif;
+                    font-weight: 500;
+                    padding: 11px 20px;''
+                    id="stop" disabled> <i class="fa fa-stop"></i> Stop</button>
                   </div>
                 </div>
                 
@@ -269,6 +303,43 @@ $('a.email').click(function () {
 });
 
   });
-  
+
+  $("#listen-content").click(function(){
+  var msg = new SpeechSynthesisUtterance();
+
+    content = $("#news-real-content").children("p").text();
+    console.log(content)
+    msg.text = content;
+    window.speechSynthesis.speak(msg);
+//$('#paused').removeAttr('disabled');
+    //$('#stop').removeAttr('disabled');
+   
+
+  });
+$('#paused').click(function(){
+  window.speechSynthesis.pause();
+//$('#stop').removeAttr('disabled');
+ // $('#resume').removeAttr('disabled');
+
+ // $('#listen-content').prop('disabled',true);
+
+});
+
+$('#resume').click(function(){
+  window.speechSynthesis.resume()
+ // $('#listen-content').removeAttr('disabled');
+ // $('#paused').removeAttr('disabled');
+ // $('#stop').removeAttr('disabled');
+
+});
+$('#stop').click(function(){
+  window.speechSynthesis.cancel();
+  //$('#listen-content').removeAttr('disabled');
+
+ // $('#resume').prop('disabled',true);
+  //$('#stop').prop('disabled',true);
+  //$('#paused').prop('disabled',true);
+
+});
 </script>
 {% endblock %}

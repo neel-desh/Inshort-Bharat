@@ -20,3 +20,4 @@ beautifulsoup4
 scikit-learn
 scipy
 matplotlib
+COVID19Py

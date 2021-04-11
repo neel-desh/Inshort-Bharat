@@ -46,10 +46,23 @@
 # from gensim.summarization.summarizer import summarize
 # doc ="""Machine learning (ML) is the scientific study of algorithms and statistical models that computer systems use to progressively improve their performance on a specific task. Machine learning algorithms build a mathematical model of sample data, known as "training data", in order to make predictions or decisions without being explicitly programmed to perform the task. Machine learning algorithms are used in the applications of email filtering, detection of network intruders, and computer vision, where it is infeasible to develop an algorithm of specific instructions for performing the task. Machine learning is closely related to computational statistics, which focuses on making predictions using computers. The study of mathematical optimization delivers methods, theory and application domains to the field of machine learning. Data mining is a field of study within machine learning, and focuses on exploratory data analysis through unsupervised learning.In its application across business problems, machine learning is also referred to as predictive analytics."""
 # print()
-from flask import Markup
-import bs4
-tag = Markup('<h1>Bishh</h1>')
+# from flask import Markup
+# import bs4
+# tag = Markup('<h1>Bishh</h1>')
 
-soup = bs4.BeautifulSoup(tag,'html.parser')
+# soup = bs4.BeautifulSoup(tag,'html.parser')
 
-print(soup.text)
+# print(soup.text)
+
+# import COVID19Py
+# covid19 = COVID19Py.COVID19()
+
+# covid19 = COVID19Py.COVID19(data_source="jhu")
+# latest = covid19.getLatest()
+# print(latest)
+
+# location = covid19.getLocationByCountryCode("IN")
+# print(location)
+
+# 135355885
+# 13358805

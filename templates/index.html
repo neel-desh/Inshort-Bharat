@@ -4,6 +4,17 @@
 <div class="container">
   <div class="row" style="padding-top: 40px">
     <div class="col-md-8 col-lg">
+    <div class="d-flex justify-content-lg-around">
+      <div class="alert alert-info" role="alert">
+       Total Confirmed : {{ covid['confirmed']}}
+      </div>
+      <div class="alert alert-danger" role="alert">
+        Total Deaths : {{ covid['deaths']}}
+      </div>
+      <div class="alert alert-success" role="alert">
+        Total Recovered: {{ covid['recovered']}}
+      </div>
+      </div>
       <article class="blog-grid" style="border: solid 0.2px #246df8">
         <div class="body">
           <span class="date">{{day}} <span>{{month}}</span> </span>
@@ -14,6 +25,7 @@
             {{weather_data["desc"]}}
           </p>
         </div>
+
       </article>
     </div>
   </div>

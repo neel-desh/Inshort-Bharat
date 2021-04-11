@@ -86,7 +86,7 @@
                   <li class="menu-item ">
                     <a href="/web-stories">Web Stories</a>
                   </li>
-                  <li class="menu-item dropdown">
+                  <!-- <li class="menu-item dropdown">
                     <a title="" href="/category" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Category</a>
                     <ul  class="dropdown-menu">
                       <li class="menu-item"><a  href="#">Dynamic render urls </a></li>
@@ -96,7 +96,7 @@
 
                   <li class="menu-item"><a href="/category/tech">Tech</a></li>
                   <li class="menu-item"><a href="/category/astrology">Astrology</a></li>
-                  <li class="menu-item"><a href="/category/entertainment">Entertainment</a></li>
+                  <li class="menu-item"><a href="/category/entertainment">Entertainment</a></li> -->
 
                   <!-- <li class="menu-item dropdown">
                     <a title="" href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Pages</a>
@@ -536,7 +536,8 @@
                success: function(data)
                {
                     //$('#success').show().fadeOut(3000,()=>{$('#success').hide()})// show response
-                    console.log(data)
+                    console.log(data);
+                    location.reload();
 
                },
                error:function(data)

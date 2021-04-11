@@ -20,6 +20,12 @@ from flask import Markup
 from gensim.summarization.summarizer import summarize
 import bs4
 import pickle
+import COVID19Py
+
+covid19 = COVID19Py.COVID19()
+
+covid19 = COVID19Py.COVID19(data_source="jhu")
+latest_covid = covid19.getLatest()
 
 pickle_in = open(r'./model.pickle','rb')
 classifier = pickle.load(pickle_in)
@@ -63,19 +69,19 @@ app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 # Mysql connection
 try:
-    # database = mysql.connector.connect(
-    # host="localhost",
-    # user="root",
-    # password="",
-    # database="inshort_bharat"
-    # )
     database = mysql.connector.connect(
-    host="mysql.stackcp.com",
-    user="inshortbharat-313731ad7f",
-    password="36811b7ybn",
-    database="inshortbharat-313731ad7f",
-    port=53505
+    host="localhost",
+    user="root",
+    password="",
+    database="inshort_bharat"
     )
+    # database = mysql.connector.connect(
+    # host="mysql.stackcp.com",
+    # user="inshortbharat-313731ad7f",
+    # password="36811b7ybn",
+    # database="inshortbharat-313731ad7f",
+    # port=53505
+    # )
     print("Connection Success")
 except Exception as e:
     print(e)
@@ -146,7 +152,8 @@ def index():
                             weather_data=weather_data,
                             day=datetime.datetime.today().strftime('%d'),month=datetime.datetime.today().strftime('%h'),
                             newslist=news_list,
-                            categorylist=categories)
+                            categorylist=categories,
+                            covid = latest_covid)
 
 #date article reference : https://stackoverflow.com/questions/28189442/datetime-current-year-and-month-in-python
 ##==========
@@ -342,6 +349,8 @@ def dp(category,slug):
         if session['language'] == 'Hindi':        
             result = translator.translate(news['content'], src='en',dest='hi')
             news['content'] = result.text
+            result = translator.translate(news['title'], src='en',dest='hi')
+            news['title'] = result.text
     #Comment
     comment_list = []
     print(news)
@@ -384,12 +393,15 @@ def login():
             email = request.form['email']
             password = request.form['password']
             password = hashlib.md5(password.encode()).hexdigest()
-            query = 'Select id, name, email, password, type, image_url from users'
-            with database.cursor(buffered=True) as cursor:
-                cursor.execute(query)
+            print(email)
+            query = 'Select id, name, email, password, type, image_url from users where email = %s and password = %s'
+            data = (email,password)
+            with database.cursor() as cursor:
+                cursor.execute(query,data)
                 db_data = cursor.fetchall()
                 for row in db_data:
-                    #print(row[1],row[2])
+                    print("helpppppppppp")
+                    print(db_data)
                     if row[2] == email and row[3] == password:
                         print(row)
                         session['user_id'] = row[0]
@@ -398,8 +410,6 @@ def login():
                         session['account_type'] = row[4]
                         session['user_img'] = row[5]
                         return redirect(url_for('index'))
-                    else:
-                        return render_template("authentication/login.html",msg="No data was found")
         except Exception as e:
             print(e)
             database.rollback()
