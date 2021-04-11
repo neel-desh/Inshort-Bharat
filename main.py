@@ -22,10 +22,15 @@ import bs4
 import pickle
 import COVID19Py
 
-covid19 = COVID19Py.COVID19()
-
-covid19 = COVID19Py.COVID19(data_source="jhu")
-latest_covid = covid19.getLatest()
+latest_covid = ""
+try:
+    covid19 = COVID19Py.COVID19()
+    covid19 = COVID19Py.COVID19(data_source="jhu")
+    latest_covid = covid19.getLatest()
+except Exception as e:
+    covid19 = COVID19Py.COVID19()
+    covid19 = COVID19Py.COVID19(data_source="csbs")
+    latest_covid = covid19.getLatest()
 
 pickle_in = open(r'./model.pickle','rb')
 classifier = pickle.load(pickle_in)
@@ -69,19 +74,19 @@ app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 # Mysql connection
 try:
-    database = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="",
-    database="inshort_bharat"
-    )
     # database = mysql.connector.connect(
-    # host="mysql.stackcp.com",
-    # user="inshortbharat-313731ad7f",
-    # password="36811b7ybn",
-    # database="inshortbharat-313731ad7f",
-    # port=53505
+    # host="localhost",
+    # user="root",
+    # password="",
+    # database="inshort_bharat"
     # )
+    database = mysql.connector.connect(
+    host="mysql.stackcp.com",
+    user="inshortbharat-313731ad7f",
+    password="36811b7ybn",
+    database="inshortbharat-313731ad7f",
+    port=53505
+    )
     print("Connection Success")
 except Exception as e:
     print(e)
@@ -228,7 +233,33 @@ def get_weather(city):
 @app.route('/category/<category_name>',methods=['GET','POST'])
 def category_scrape(category_name):
     #TODO: RETURN CATEGORY
-    return render_template("news/blog-grid.html")
+    category_namee = category_name
+    news_list = []
+    query = """SELECT news.id, title, content, MONTHNAME(published_date), image, category, slug, users.name, count(comments.comment), DATE_FORMAT(published_date,"%D")
+               FROM news             
+               LEFT JOIN users ON news.published_by = users.id
+               LEFT JOIN comments ON news.id = comments.post_id
+               WHERE category = %s """
+    print(query)
+    with database.cursor(buffered=True) as cursor:
+        cursor.execute(query,(category_namee,))
+        db_data = cursor.fetchall()
+        news = {}
+        for row in db_data:
+            print(row)
+            news['id'] = row[0]
+            news['title'] = row[1]
+            news['content'] = row[2]
+            news['month'] = row[3]
+            news['image'] = row[4]
+            news['category'] = row[5]
+            news['slug'] = row[6]
+            news['name'] = row[7]
+            news['commentcount'] = row[8]
+            news['day'] = row[9]
+
+            news_list.append(news)
+    return render_template("news/blog-grid.html", categories = news_list)
         
 
 
