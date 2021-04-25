@@ -63,10 +63,10 @@
         title="Inshort Bharat Stoires"
         publisher="Neel Deshmukh"
         publisher-logo-src="/static/assets/AMP-Brand-White-Icon.svg"
-        poster-portrait-src="/static/assets/cover.jpg">
+        poster-portrait-src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsaP3ODf5MkaWpduv_yCOsJO-u0qCxkB_77A&usqp=CAU">
       <amp-story-page id="cover">
         <amp-story-grid-layer template="fill">
-          <amp-img src="/static/assets/cover.jpg"
+          <amp-img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsaP3ODf5MkaWpduv_yCOsJO-u0qCxkB_77A&usqp=CAU"
               width="720" height="1280"
               layout="responsive">
           </amp-img>
@@ -78,7 +78,7 @@
       </amp-story-page>
 
       <!-- Page 1 (Cat): 1 layer (vertical) -->
-      {% for story in stories %}
+      <!-- {% for story in stories %}
       <amp-story-page id="{{story.id}}">
         <amp-story-grid-layer template="vertical">
           <h1>{{story.head}}</h1>
@@ -90,22 +90,25 @@
 
         </amp-story-grid-layer>
       </amp-story-page>
-      {% endfor %}
+      {% endfor %} -->
       <!-- Page 2 (Dog): 2 layers (fill + thirds) -->
+      {% for story in stories %}
 
-      <!-- <amp-story-page id="page2">
+      <amp-story-page id="page2">
         <amp-story-grid-layer template="fill">
-          <amp-img src="/static/assets/dog.jpg" 
+          <amp-img src="{{story.src}}" 
               width="720" height="1280"
               layout="responsive">
           </amp-img>
         </amp-story-grid-layer>
           <amp-story-grid-layer template="thirds">
-            <h1 grid-area="upper-third">Dogs</h1>
-            <p grid-area="lower-third">Dogs were probably the first tame animals. They have accompanied humans for some 10,000 years. Some scientists assert that all dogs, domestic and wild, share a common ancestor in the small South Asian wolf.</p>
+            <h1 grid-area="upper-third">{{story.head | truncate(55)}}</h1>
+            <p grid-area="lower-third">
+              {{story.content | truncate(100) }}
+            </p>
         </amp-story-grid-layer>
-      </amp-story-page> -->
-
+      </amp-story-page>
+      {% endfor %}
       <!-- Page 3 (Bird): 3 layers (fill + vertical + vertical) + Audio-->
       <!-- <amp-story-page id="page3" background-audio="/static/assets/bird-singing.mp3">
         <amp-story-grid-layer template="fill">
@@ -176,7 +179,7 @@
       </amp-story-page> -->
 
       <!-- Bookend -->
-      <amp-story-bookend src="/static/bookend.json" layout="nodisplay"></amp-story-bookend>
+      
     </amp-story>
   </body>
 </html>

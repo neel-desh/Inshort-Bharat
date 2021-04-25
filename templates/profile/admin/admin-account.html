@@ -25,6 +25,7 @@
                 </div> -->
                 <div class="dashboard-section dashboard-recent-activity">
                   <h4 class="title">Recently Published News</h4>
+                  {% if newslist|length > 0 %}
                   <!-- For loop here -->
                   {% for news in newslist %}
                   <div class="activity-list">
@@ -39,6 +40,16 @@
                     </div>
                   </div>
                   {% endfor %}
+                  {% else %}
+                  <div class="activity-list">
+                    <!-- <i class="fas fa-bolt"></i> -->
+                    <div class="content">
+                      <h5>No news published by you</h5>
+                    </div>
+
+                  </div>
+                  {% endif %}
+
                   <!-- For loop Ends here -->
                 </div>
             {% endblock %}

@@ -229,8 +229,9 @@
                   </div>
                   <button class="btn button primary-bg">Submit<i class="fas fa-caret-right"></i></button>
                   
-                  <p id="success" class="newsletter-success">Thank you for subscribing!</p>
                 </form>
+                <div id="success"  style="display: none;" class="newsletter-success">Thank you for subscribing!</div>
+
               </div>
             </div>
           </div>
@@ -301,6 +302,7 @@
                {
                     $('#success').show().fadeOut(3000,()=>{$('#success').hide()})// show response
                     $("#newsletter-submit").trigger('reset');
+                    alert("Thanks for subscribing!!!")
 
                },
                error:function(data)

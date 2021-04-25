@@ -14,6 +14,8 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {% if newslist|length > 0 %}
+
                       {% for news in newslist %}
                       <tr class="job-items" id="{{news['id']}}">
                         <td class="title">
@@ -30,6 +32,20 @@
                         </td>
                       </tr>
                       {% endfor %}
+                      {% else %}
+                      <tr class="job-items" >
+                        <td class="title">
+                          <h5>No news to manage, publish now!</h5>
+ 
+                        </td>
+                        <!-- <td class="application"><a href="#">6</a></td> -->
+                        <td class="deadline">--------</td>
+                        
+                        <td class="action">
+                          --------
+                        </td>
+                      </tr>
+                      {% endif %}
                     </tbody>
                   </table>
 

@@ -7,6 +7,7 @@
           <div class="col">
             <div class="blog-post-wrapper">
               <div class="row">
+                {% if categories| length > 0 %}
                 {% for cat in categories %}
                 <div class="col-md-6 col-lg-4">
                   <article class="blog-grid">
@@ -27,6 +28,14 @@
                   </article>
                 </div>
                 {% endfor %}
+                {%else%}
+               
+                  <h3>No News data in this category</h3>
+
+                
+                
+                {% endif %}
+
               </div>
               <div class="row">
                 <div class="col">

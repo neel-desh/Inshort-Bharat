@@ -20,17 +20,30 @@ from flask import Markup
 from gensim.summarization.summarizer import summarize
 import bs4
 import pickle
-import COVID19Py
+# import COVID19Py
+import emailsender as ty
+from covid import Covid
 
-latest_covid = ""
-try:
-    covid19 = COVID19Py.COVID19()
-    covid19 = COVID19Py.COVID19(data_source="jhu")
-    latest_covid = covid19.getLatest()
-except Exception as e:
-    covid19 = COVID19Py.COVID19()
-    covid19 = COVID19Py.COVID19(data_source="csbs")
-    latest_covid = covid19.getLatest()
+
+latest_covid = {}
+covid = Covid(source="worldometers")
+covid.get_data()
+
+latest_covid["active"] = covid.get_total_active_cases()
+latest_covid["confirmed"] = covid.get_total_confirmed_cases()
+latest_covid["recovered"] = covid.get_total_recovered()
+latest_covid["deaths"] = covid.get_total_deaths()
+
+# try:
+#     covid19 = COVID19Py.COVID19()
+#     covid19 = COVID19Py.COVID19(data_source="jhu")
+#     latest_covid = covid19.getLatest()
+# except Exception as e:
+#     covid19 = COVID19Py.COVID19()
+#     covid19 = COVID19Py.COVID19(data_source="csbs")
+#     latest_covid = covid19.getLatest()
+
+
 
 pickle_in = open(r'./model.pickle','rb')
 classifier = pickle.load(pickle_in)
@@ -74,19 +87,19 @@ app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 # Mysql connection
 try:
-    # database = mysql.connector.connect(
-    # host="localhost",
-    # user="root",
-    # password="",
-    # database="inshort_bharat"
-    # )
     database = mysql.connector.connect(
-    host="mysql.stackcp.com",
-    user="inshortbharat-313731ad7f",
-    password="36811b7ybn",
-    database="inshortbharat-313731ad7f",
-    port=53505
+    host="localhost",
+    user="root",
+    password="",
+    database="inshort_bharat"
     )
+    # database = mysql.connector.connect(
+    # host="mysql.stackcp.com",
+    # user="inshortbharat-313731ad7f",
+    # password="36811b7ybn",
+    # database="inshortbharat-313731ad7f",
+    # port=53505
+    # )
     print("Connection Success")
 except Exception as e:
     print(e)
@@ -133,6 +146,7 @@ def index():
     all_headlines = newsapi.get_top_headlines(category="general",
     language='en',country="in")
     news_articles = all_headlines.get('articles')
+    print("news headlines", news_articles)
     for news in news_articles:
         headline += news['title'] + " "
     news_list = []
@@ -174,39 +188,39 @@ def changelang():
 #
 #* Scraper & application object store
 #
-@app.context_processor
-def category_data():
-    response_obj = newsapi.get_everything(
-                                    language='en',
-                                    q='Technology')
-    Tech_all_articles = response_obj["articles"]
-    response_obj1 = newsapi.get_everything(
-                                    language='en',
-                                    q='entertainment')
-    Entertainment_all_articles = response_obj1["articles"]
-    articles = {}
-    articles["technology"] = Tech_all_articles
-    articles["entertainment"] =Entertainment_all_articles
-    return dict(articles = articles)
+# @app.context_processor
+# def category_data():
+#     response_obj = newsapi.get_everything(
+#                                     language='en',
+#                                     q='Technology')
+#     Tech_all_articles = response_obj["articles"]
+#     response_obj1 = newsapi.get_everything(
+#                                     language='en',
+#                                     q='entertainment')
+#     Entertainment_all_articles = response_obj1["articles"]
+#     articles = {}
+#     articles["technology"] = Tech_all_articles
+#     articles["entertainment"] =Entertainment_all_articles
+#     return dict(articles = articles)
 
 #
 # Blog.html is used here. make other blog page for non scrape articles later
 #    
 #Tech route
-@app.route('/technology')
-def techo_articles():
-    return render_template("news/blog.html",category='technology')
+# @app.route('/technology')
+# def techo_articles():
+#     return render_template("news/blog.html",category='technology')
 
-#entertainment route
-@app.route('/entertainment')
-def entertain_articles():
-    return render_template("news/blog.html",category='entertainment')
+# #entertainment route
+# @app.route('/entertainment')
+# def entertain_articles():
+#     return render_template("news/blog.html",category='entertainment')
 
-@app.route('/article/<category>/<title>',methods=['GET','POST'])
-def scrape_article(category,title):
-    category = category
-    title = title
-    return render_template("news/blog-details-scraped.html",category = category, title = title)
+# @app.route('/article/<category>/<title>',methods=['GET','POST'])
+# def scrape_article(category,title):
+#     category = category
+#     title = title
+#     return render_template("news/blog-details-scraped.html",category = category, title = title)
 #
 # get weather data
 #
@@ -268,25 +282,19 @@ def category_scrape(category_name):
 ##==========
 @app.route('/web-stories')
 def webstories():
-    stories = [
-    {
-        "id":1,
-        "head":"Dogs",
-        "src" :"/static/assets/dog.jpg",
-        "content": "Bubus are very very cute ekdum smol & sexy cuties"
-    },
-    {
-        "id":2,
-        "head":"Cats",
-        "src" : "/static/assets/bookend_cats.jpg",
-        "content": "Hello, cats are very cute, only some of them are, rest trash."
-    },
-    {
-        "id":3,
-        "head":"Parrots",
-        "src" : "/static/assets/bird.jpg",
-        "content": "hehehehheahjahfkjhdfkhadkjfhkjahfkjhajkfhdjkhfjakdhfkjdhfkj i bite u"
-    }]
+    stories = []
+    i = 1
+    all_headlines = newsapi.get_top_headlines(category="general",
+    language='en',country="in")
+    news_articles = all_headlines.get('articles')
+    for news in news_articles:
+        data = {}
+        data["id"] = i
+        data["head"] = news['title']
+        data["src"] = news['urlToImage']
+        data["content"] = news['description']
+        stories.append(data)
+        i += 1
     return render_template("news/stories.html",stories=stories)
 
 ##?================================================
@@ -469,9 +477,9 @@ def register():
             "OTP" : OTP
         }
         session['user_info'] = user_info
-        msg = Message('OTP', sender = 'sem6@neeldeshmukh.com',
+        msg = Message('Here is OTP to verify!', sender = 'sem6@neeldeshmukh.com',
                                 recipients = [email])
-        msg.body = "OTP: " + str(OTP)
+        msg.html = str(ty.giveHtml(str(OTP),name))
         mail.send(msg)           
         # except Exception as e:      
         #     print(e)      
@@ -540,7 +548,7 @@ def verifyotpfp():
             return redirect(url_for("changefp"))
     return render_template("authentication/forgot-verify.html")
 
-@app.route('/change-fp')
+@app.route('/change-fp',methods=['GET','POST'])
 def changefp():
     if request.method == 'POST':
         if session["fp-otp-verified"]:
@@ -731,16 +739,16 @@ def changepassword():
         new_pass = request.form['newpassword']
         new_pass = hashlib.md5(new_pass.encode()).hexdigest()
 
-        query = 'SELECT id, password from users WHERE id=%d'
+        query = 'SELECT id, password from users WHERE id='+str(user_id)+''
         data = (int(user_id))
         with database.cursor(buffered=True) as cursor:
-            cursor.execute(query,data)
+            cursor.execute(query)
             db_data = cursor.fetchall()
             for row in db_data:
                 if row[1] == password:
                     #update with the new password
-                    update_query = "UPDATE users SET password = %s WHERE id = '%d'"
-                    update_data = (new_pass,int(user_id))
+                    update_query = "UPDATE users SET password = %s WHERE id = %s"
+                    update_data = (new_pass,user_id,)
                     with database.cursor(buffered=True) as cursor:
                         cursor.execute(update_query,update_data)
                         database.commit()
@@ -839,18 +847,17 @@ def delaccount():
         password = request.form['password']
         password = hashlib.md5(password.encode()).hexdigest()
 
-        query = "SELECT id, password from users WHERE id = %s"
-        data = (user_id)
+        query = "SELECT id, password, email from users WHERE id = "+ str(user_id)+""
+        
         with database.cursor(buffered=True) as cursor:
-            cursor.execute(query,data)
+            cursor.execute(query)
             db_data = cursor.fetchall()
             for row in db_data:
-                if row[1] == password:
-                    #update with the new password
-                    update_query = "DELETE from users WHERE id = %s"
+                if row[1] == password and row[2] == session['email']:
+                    update_query = "DELETE from users WHERE id = "+ str(user_id)+""
                     update_data = (user_id)
                     with database.cursor(buffered=True) as cursor:
-                        cursor.execute(update_query,update_data)
+                        cursor.execute(update_query)
                         database.commit()
                     #return logout and relogin after password change
                     return redirect(url_for('logout'))
@@ -1219,6 +1226,12 @@ def newsletter():
         email = request.form['email']
         #TODO: Send Email
         print(email)
+        query = "INSERT INTO newsletter(email) values (%s)"
+        data = (email,)
+        with database.cursor() as cursor:
+            cursor.execute(query,data)
+            database.commit()
+            return "Success"
     return "Thanks!"
 
 ##
@@ -1338,6 +1351,8 @@ def uploadImageFirebase(image,storagePath):
 ##!
 ##! Server Error Handler
 ##!
+
+
 
 ##*
 ##* 404 Handler
