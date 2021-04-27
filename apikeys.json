@@ -1,0 +1,13 @@
+// app.config.update(GEOIPIFY_API_KEY='at_v1LEHVAlNSSUFAb6T3ONOJcNdy2WU')
+// newsapi = NewsApiClient(api_key="18cd6534eefc44db90cb02e7ef2cb9fc")
+
+ {
+    "apiKey": "AIzaSyDmRPCLhyOVASlBhHWwZ3slD0nZr9VWOlE",
+    "authDomain": "inshortbharat.firebaseapp.com",
+    "databaseURL": "https://inshortbharat-default-rtdb.firebaseio.com",
+    "projectId": "inshortbharat",
+    "storageBucket": "inshortbharat.appspot.com",
+    "messagingSenderId": "381240062652",
+    "appId": "1:381240062652:web:a99ed5dda628ddb59dd6b9",
+    "measurementId": "G-4ZP05FMFRR"
+  };

@@ -28,10 +28,10 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600%7CRoboto:300i,400,500" rel="stylesheet">
 
-
+    <link rel="manifest" href="/manifest.json">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
-    <link rel="manifest" href="/manifest.json">
+
 
   </head>
   <body>
@@ -57,71 +57,22 @@
 
     <!-- Header End -->
  
-    <div class="alice-bg  section-padding-bottom">
-        <div id="newsoffline" class="container">
-  
+    <div class="section-padding-bottom alice-bg">
+        <div class="container">
           <div class="row">
-            
             <div class="col">
-  
-              <div class="blog-post-details-container">
-                <div class="blog-details-wrapper">
-                  <div class="info">
-                    <span class="date">date</span>
-                    <span id="author" class="author"><a href="#"><i data-feather="user"></i>authorname</a></span>
-  
-  
-                  </div>
-                  <div class="post-content">
-                      
-                    <h2 id="title" >Long ass title here</h2>
-                   
-                    <img src="" class="img-fluid" alt="">
-  
-                      <div id="news-real-content">
-                        Content here
-                      
-                      </div>
-  
-
-                  </div>
-                  
+              <div class=" error-page-wrap text-center white-bg">
+                <div class="icon">
+                  <img src="/static/images/error.png" class="img-fluid" alt="">
                 </div>
-  
-                <!-- <div class="post-meta">
-                  <div class="post-author">
-                    <div class="avatar">
-                      <img src="imge data" class="img-fluid" alt="">
-                    </div>
-                    <div class="name">
-                      <p>News By</p>
-                      <h5><a href="#">Neel</a></h5>
-                    </div>
-                  </div>
-  
-                  <div class="post-tag">
-                    
-                    <h6>News Tag </h6>
-                    <div class="tags">
-                    
-                    <a href="#">tag here</a>
-                    
-                    </div>
-                  </div>
-  
-                  <div class="post-share">
-                    <h6>Follow Editor</h6>
-                    <div class="social-buttons">
-                      <a href="" class="facebook"><i class="fab fa-facebook-f"></i></a>
-                      <a href="" class="twitter"><i class="fab fa-twitter"></i></a>
-                      <a href="" class="google"><i class="fab fa-google-plus-g"></i></a>
-                      <a href="" class="linkedin"><i class="fab fa-linkedin-in"></i></a>                  
-                      <a href="" class="instagram"><i class="fab fa-instagram"></i></a>
-                    </div>
-                  </div>
-                </div> -->
-              </div></div></div></div></div>
-
+                <h1>404</h1>
+                <p>we can't find the page your are looking for</p>
+                <a href="/" class="button">Go Back</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     
 
     <!-- Footer -->
@@ -200,62 +151,8 @@
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
     <script src="/static/js/map.js"></script>
-    <script src="/offline/app.js"></script>
-    <script>
-      let db = null
-      let article_list = []
-      //function createDB() {
-      request = indexedDB.open('InshortBharat', 2);
-      request.onupgradeneeded = e => {
-               // ### called whenever the DB changes version. triggers when the DB is created ###
-               db = e.target.result
-               store = db.createObjectStore('articles', {keyPath: 'id', autoIncrement: true})
-               
-               console.log('Database created or upgraded.')
-      }
-        request.onsuccess = e =>{
-        // ### called when the connection with the DB is opened successfully ###
-        db = request.result
-        console.log('Database connection opened.')
-        
-        // ### open a transaction ###
-        tx = db.transaction('articles', 'readwrite')
-        store = tx.objectStore('articles')
-        const news = {
-          
-          name : "Neel",
-          title : "Fancy News Application",
-          content : "The best news app that was ever made."
-        }
-        // ### store a new record with the current timestamp ###
-        // now = new Date()
-        //store.add(news)
-        let id = window.location.hash
-        key = id.slice(1)
-        const data = store.openCursor();
-        console.log(data)
-        data.onsuccess = e => {
-          const cursor = e.target.result
-          console.log(e)
+    <script src="/static/offline/app.js"></script>
 
-          if(cursor){
-            console.log(cursor)
 
-                        //alert(`News : ${cursor.value.content}`)
-            if( parseInt(key) === cursor.key ){
-              console.log("Got the data ")
-              $("#title").text(cursor.value.title)  
-              $("#news-real-content").text(cursor.value.content) 
-              $("#author").text(cursor.value.name)  
-            }
-            cursor.continue()
-
-          }
-        }
-
-    
-      }
-
-  </script>
   </body>
 </html>

@@ -56,23 +56,37 @@
     </header>
 
     <!-- Header End -->
- 
-    <div class="section-padding-bottom alice-bg">
-        <div class="container">
-          <div class="row">
-            <div class="col">
-              <div class=" error-page-wrap text-center white-bg">
-                <div class="icon">
-                  <img src="/static/images/error.png" class="img-fluid" alt="">
+    <div class="alice-bg section-padding-bottom">
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            
+            <div class="blog-post-wrapper">
+            
+             
+              <!-- <article class="blog-list">
+                <div class="info">
+                  <span class="date">date</span>
                 </div>
-                <h1>404</h1>
-                <p>we can't find the page your are looking for</p>
-                <a href="/" class="button">Go Back</a>
-              </div>
+                <div class="content">
+                  <h3><a href="">title</a></h3>
+
+                  <p> news_summarizer</p>
+            
+                </div>
+                <div class="read-more">
+                  <a href="" class="button">Read More</a>
+                </div>
+              </article> -->
+
+
             </div>
           </div>
         </div>
+        <!-- row ends -->
       </div>
+    </div>
+
     
 
     <!-- Footer -->
@@ -151,7 +165,68 @@
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
     <script src="/static/js/map.js"></script>
-    <script src="/offline/app.js"></script>
+    <script src="/static/offline/app.js"></script>
+    <script>
+        let db = null
+        let article_list = []
+        //function createDB() {
+        request = indexedDB.open('InshortBharat', 2);
+        request.onupgradeneeded = e => {
+                 // ### called whenever the DB changes version. triggers when the DB is created ###
+                 db = e.target.result
+                 store = db.createObjectStore('articles', {keyPath: 'id', autoIncrement: true})
+                 
+                 console.log('Database created or upgraded.')
+        }
+          request.onsuccess = e =>{
+          // ### called when the connection with the DB is opened successfully ###
+          db = request.result
+          console.log('Database connection opened.')
+          
+          // ### open a transaction ###
+          tx = db.transaction('articles', 'readwrite')
+          store = tx.objectStore('articles')
+          const news = {
+            
+            name : "Neel",
+            title : "Fancy News Application",
+            content : "The best news app that was ever made."
+          }
+          // ### store a new record with the current timestamp ###
+          // now = new Date()
+          //store.add(news)
+          
+          const data = store.openCursor();
+          data.onsuccess = e => {
+            const cursor = e.target.result
+  
+            if(cursor){
+              console.log(cursor)
+              article = `<article class="blog-list">
+                <div class="info">
+                  <span class="date">${cursor.value.name}</span>
+                </div>
+                <div class="content">
+                  <h3><a href="">${cursor.value.title}</a></h3>
 
+                  <p> ${cursor.value.content}</p>
+            
+                </div>
+                <div class="read-more">
+                  <a href="/offline/detailpage.html#${cursor.key}" class="button">Read More</a>
+                </div>
+              </article>`
+
+              $(".blog-post-wrapper").append(article)
+              //alert(`News : ${cursor.value.content}`)
+              cursor.continue()
+  
+            }
+          }
+
+      
+        }
+
+    </script>
   </body>
 </html>

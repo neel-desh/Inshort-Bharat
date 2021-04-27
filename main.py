@@ -50,14 +50,7 @@ classifier = pickle.load(pickle_in)
 
 #Firebase Config
 firebaseConfig = {
-    "apiKey": "AIzaSyDmRPCLhyOVASlBhHWwZ3slD0nZr9VWOlE",
-    "authDomain": "inshortbharat.firebaseapp.com",
-    "databaseURL": "https://inshortbharat-default-rtdb.firebaseio.com",
-    "projectId": "inshortbharat",
-    "storageBucket": "inshortbharat.appspot.com",
-    "messagingSenderId": "381240062652",
-    "appId": "1:381240062652:web:a99ed5dda628ddb59dd6b9",
-    "measurementId": "G-4ZP05FMFRR"
+   
   };
 firebase = pyrebase.initialize_app(firebaseConfig)
 storage = firebase.storage()
@@ -71,8 +64,8 @@ app.secret_key = 'this is a very secure string'
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = set(['jpeg', 'jpg', 'png', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config.update(GEOIPIFY_API_KEY='at_v1LEHVAlNSSUFAb6T3ONOJcNdy2WU')
-newsapi = NewsApiClient(api_key="18cd6534eefc44db90cb02e7ef2cb9fc")
+app.config.update(GEOIPIFY_API_KEY='#')
+newsapi = NewsApiClient(api_key="#")
 simple_geoip = SimpleGeoIP(app)
 translator = Translator()
 
@@ -80,7 +73,7 @@ translator = Translator()
 app.config['MAIL_SERVER']='smtp.stackmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USERNAME'] = 'sem6@neeldeshmukh.com'
-app.config['MAIL_PASSWORD'] = 'Gr5d4aa42'
+app.config['MAIL_PASSWORD'] = '#'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 
@@ -93,13 +86,6 @@ try:
     password="",
     database="inshort_bharat"
     )
-    # database = mysql.connector.connect(
-    # host="mysql.stackcp.com",
-    # user="inshortbharat-313731ad7f",
-    # password="36811b7ybn",
-    # database="inshortbharat-313731ad7f",
-    # port=53505
-    # )
     print("Connection Success")
 except Exception as e:
     print(e)
@@ -756,6 +742,14 @@ def changepassword():
                     return redirect(url_for('logout'))
     else:
         return "None"
+
+
+# @app.route('/sw.js',methods=['GET','POST'])
+# def sw():
+#     return jsonify("/sw.js")
+@app.route('/sw.js', methods=['GET'])
+def sw():
+    return send_from_directory('/static/', filename="sw.js",mimetype="application/javascript")
 
 ##==========
 ##TODO: Basic Info

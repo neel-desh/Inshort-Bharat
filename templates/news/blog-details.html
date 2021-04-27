@@ -37,9 +37,12 @@
 
                       <a class="save" href="/at-fav/{{news['id']}}"><i data-feather="heart"></i>Add to favourite </a>
                       <span class="job-apply-buttons" >
-                      <a href="#" class="email"><i data-feather="download"></i>Save Offile</a>
-                      </span>
+                      <a href="#" class="email"><i data-feather="download"></i>Save Pdf</a>
+                      <button onclick="createDB()" class="email"><i data-feather="download"></i>Save Offile</button>
                       
+                      
+
+                      </span>
                     </div>
               
                   </div>
@@ -84,7 +87,7 @@
                   </div>
                   <div class="name">
                     <p>News By</p>
-                    <h5><a href="#">{{news['authorname']}}</a></h5>
+                    <h5><a href="#" id="authorname">{{news['authorname']}}</a></h5>
                   </div>
                 </div>
 
@@ -341,5 +344,53 @@ $('#stop').click(function(){
   //$('#paused').prop('disabled',true);
 
 });
+</script>
+
+<script src="/app.js"></script>
+
+
+<script>
+  function createDB() {
+
+  let db = null
+  
+  request = indexedDB.open('InshortBharat', 3);
+  request.onupgradeneeded = e => {
+           // ### called whenever the DB changes version. triggers when the DB is created ###
+           db = e.target.result
+           store = db.createObjectStore('articles', {keyPath: 'id', autoIncrement: true})
+           
+           console.log('Database created or upgraded.')
+  }
+    request.onsuccess = e =>{
+    // ### called when the connection with the DB is opened successfully ###
+    db = request.result
+    console.log('Database connection opened.')
+    
+    // ### open a transaction ###
+    tx = db.transaction('articles', 'readwrite')
+    store = tx.objectStore('articles')
+     
+   let name = $("#authorname").text()
+   let title = $("#title").text()
+   let content = $("news-real-content").children("p").text()
+    const news = {
+    name,
+    title,
+    content  
+ 
+    }
+    // ### store a new record with the current timestamp ###
+    // now = new Date()
+    store.add(news)
+    
+    
+    
+
+
+  }
+}
+
+
 </script>
 {% endblock %}

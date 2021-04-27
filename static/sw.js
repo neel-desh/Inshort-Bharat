@@ -1,9 +1,9 @@
-const staticCacheName = 'inshortbharat-v1';
-const dynamicCacheName = 'inshortbharat-dynamic-v1';
+const staticCacheName = 'inshortbharat-v2';
+const dynamicCacheName = 'inshortbharat-dynamic-v2';
 const assets = [
-    "/offline/index.html",
-    "/offline/detailpage.html",
-    "/offline/fallback.html",
+    "/static/index.html",
+    "/static/detailpage.html",
+    "/static/fallback.html",
     "/static/images/error.png",
     "/static/assets/css/bootstrap.min.css",
     "https://cdn.ampproject.org/amp-story-player-v0.js",
