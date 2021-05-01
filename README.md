@@ -31,9 +31,13 @@
 
 # Screenshots of the final product:
 ![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20( 1 ).jpg)
+
 ![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20( 2 ).jpg)
+
 ![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20( 3 ).jpg)
+
 ![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20( 4 ).jpg)
+
 ![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20( 5 ).jpg)
 ![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20( 6 ).jpg)
 ![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20( 7 ).jpg)
