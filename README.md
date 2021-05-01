@@ -30,7 +30,6 @@
 2) Amp.dev was used.
 
 # Screenshots of the final product:
-![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20(0).jpg)
 ![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20(1).jpg)
 ![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20(2).jpg)
 ![Screenshot](https://raw.githubusercontent.com/neel-desh/Inshort-Bharat/main/Screenshot/NewsApp-AI-neel-desh%20(3).jpg)
